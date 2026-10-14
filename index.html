@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1e44">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>ArchiPrépa</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d2433;--mut:#667085;--acc:#1f3a5f;--accink:#fff;--ok:#1a7f4b;--ko:#b42318;--line:#e4e0d6}
+@media(prefers-color-scheme:dark){:root{--bg:#12161f;--card:#1b2130;--ink:#eef0f5;--mut:#9aa3b5;--acc:#8fb4ee;--accink:#12161f;--line:#2b3347;--ok:#4cc38a;--ko:#f97066}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:5}
+header h1{font-size:18px;margin:0;flex:1}
+main{max-width:640px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.btn{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.btn:active{transform:scale(.99)}
+.row{display:flex;align-items:center;gap:12px}
+.ico{font-size:28px}
+.mut{color:var(--mut);font-size:14px}
+.pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mut)}
+.pri{background:var(--acc);color:var(--accink);border:0;border-radius:12px;padding:14px;font:inherit;font-weight:600;width:100%;cursor:pointer;margin-top:8px}
+.back{background:none;border:0;color:var(--acc);font:inherit;font-weight:600;cursor:pointer;padding:4px 0}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:8px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.tabs button.on{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,var(--card))}
+.opt.ko{border-color:var(--ko);background:color-mix(in srgb,var(--ko) 15%,var(--card))}
+.exp{font-size:14px;color:var(--mut);margin-top:8px}
+h2{font-size:20px;margin:4px 0 12px}
+h3{font-size:16px;margin:16px 0 6px}
+ul{padding-left:20px}
+.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--acc)}
+svg text{fill:var(--ink);font:13px system-ui}
+.big{font-size:42px;font-weight:700;text-align:center;margin:12px 0}
+
+.srch{width:100%;padding:12px 14px;margin-bottom:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit}
+.srch:focus{outline:2px solid var(--acc);outline-offset:1px}
+.ask{margin-top:0;margin-bottom:12px}
+.sec{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font:inherit;cursor:pointer}
+.sec.wide{width:100%;margin-top:8px}
+.rowb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0}
+.rowb .mut{min-width:0;overflow-wrap:anywhere}
+#chat{display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.msg{max-width:92%;padding:10px 14px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--line);background:var(--card)}
+.msg.me{align-self:flex-end;background:var(--acc);color:var(--accink);border-color:var(--acc)}
+textarea{width:100%;resize:vertical;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit}
+textarea:focus{outline:2px solid var(--acc);outline-offset:1px}
+:root[data-accent="vert"]{--acc:#1d6b4a;--accink:#ffffff}
+:root[data-accent="violet"]{--acc:#5b3fa6;--accink:#ffffff}
+:root[data-accent="orange"]{--acc:#b4501a;--accink:#ffffff}
+:root[data-accent="rose"]{--acc:#a8326b;--accink:#ffffff}
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"])[data-accent="vert"]{--acc:#5cc59a;--accink:#0f1824}
+:root:not([data-theme="light"])[data-accent="violet"]{--acc:#b39bf0;--accink:#0f1824}
+:root:not([data-theme="light"])[data-accent="orange"]{--acc:#f0a070;--accink:#0f1824}
+:root:not([data-theme="light"])[data-accent="rose"]{--acc:#f08cb9;--accink:#0f1824}
+}
+:root[data-theme="dark"][data-accent="vert"]{--acc:#5cc59a;--accink:#0f1824}
+:root[data-theme="dark"][data-accent="violet"]{--acc:#b39bf0;--accink:#0f1824}
+:root[data-theme="dark"][data-accent="orange"]{--acc:#f0a070;--accink:#0f1824}
+:root[data-theme="dark"][data-accent="rose"]{--acc:#f08cb9;--accink:#0f1824}
+
+label{display:block;font-weight:600;margin-bottom:4px}
+.lbl{font-weight:600;margin:14px 0 6px}
+.hello{margin:0 0 12px}
+.sw{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 16px}
+.swb{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+.swb.on{outline:3px solid var(--ink);outline-offset:2px}
+.swb:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.err{color:var(--ko);font-size:14px;min-height:1.2em}
+.ok{color:var(--ok);font-size:14px;min-height:1.2em}
+header .sec{padding:6px 12px;font-size:14px}
+
+.linkb{display:block;margin:16px auto 8px;background:none;border:0;color:var(--mut);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:8px}
+
+.avatar{display:block;width:140px;height:140px;border-radius:50%;object-fit:cover;margin:0 auto 14px;border:3px solid var(--line);background:var(--card)}
+
+.hlogo{width:32px;height:32px;border-radius:8px;flex:none}
+.logo-big{display:block;width:112px;height:112px;margin:0 auto 8px;border-radius:24px}
+.ctr{text-align:center}
+.creator{display:flex;align-items:center;gap:14px;margin:6px 0 10px}
+.avatar.sm{width:72px;height:72px;margin:0;flex:none}
+
+.offb{font-size:12px;padding:3px 8px;border-radius:99px;border:1px solid var(--ko);color:var(--ko);white-space:nowrap}
+</style>
+</head>
+<body>
+<header><img class="hlogo" id="hlogo" alt="" width="32" height="32"><h1 id="t">ArchiPrépa</h1><span class="offb" id="offb" hidden>Hors ligne</span><button class="sec" id="gear" type="button" hidden>Réglages</button></header>
+<main id="app"></main>
+
+<script>
+const EPURE=`<svg viewBox="0 0 300 220" width="100%" role="img" aria-label="Épure d'un point">
+<line x1="10" y1="110" x2="290" y2="110" stroke="currentColor" stroke-width="2"/>
+<text x="268" y="104">LT</text>
+<line x1="150" y1="50" x2="150" y2="170" stroke="currentColor" stroke-dasharray="4 4"/>
+<circle cx="150" cy="50" r="4" fill="currentColor"/><circle cx="150" cy="170" r="4" fill="currentColor"/>
+<text x="158" y="48">a′ (proj. verticale)</text><text x="158" y="178">a (proj. horizontale)</text>
+<line x1="100" y1="50" x2="100" y2="110" stroke="currentColor"/><text x="30" y="85">cote</text>
+<line x1="100" y1="110" x2="100" y2="170" stroke="currentColor"/><text x="14" y="145">éloignement</text>
+<text x="158" y="130" style="font-size:11px">ligne de rappel ⟂ LT</text>
+</svg>`;
+
+const DATA=[
+{id:'chimie',nom:'Chimie',ico:'⚗️',desc:'Atomes, liaisons, mole, matériaux de construction',lessons:[
+{t:'L\'atome et le tableau périodique',niv:'Prépa',body:`
+<p>L'atome est formé d'un <b>noyau</b> (protons chargés +, neutrons sans charge) entouré d'<b>électrons</b> (charge −) répartis en couches.</p>
+<ul><li><b>Z</b> = nombre de protons = nombre d'électrons (atome neutre)</li><li><b>A</b> = protons + neutrons</li></ul>
+<p>Le tableau périodique classe les éléments par <b>Z croissant</b>. Les éléments d'une même colonne ont des propriétés proches (même nombre d'électrons de valence).</p>
+<p><b>Exemple :</b> le carbone 12 a Z = 6 et A = 12, donc 12 − 6 = 6 neutrons.</p>`,
+q:[{q:'Un atome neutre a Z = 8. Combien a-t-il d\'électrons ?',o:['4','8','16'],a:1,e:'Atome neutre : électrons = protons = Z = 8.'},
+{q:'Le carbone 12 (Z = 6) a combien de neutrons ?',o:['6','12','18'],a:0,e:'A − Z = 12 − 6 = 6.'},
+{q:'Le tableau périodique est classé par…',o:['masse alphabétique','Z croissant','couleur'],a:1,e:'Les éléments sont rangés par numéro atomique Z croissant.'}]},
+{t:'Les liaisons chimiques',niv:'Prépa',body:`
+<ul><li><b>Ionique</b> : transfert d'électrons entre un métal et un non-métal (ex. NaCl).</li>
+<li><b>Covalente</b> : partage d'électrons entre non-métaux (ex. H₂O, CO₂).</li>
+<li><b>Métallique</b> : électrons libres qui circulent entre les atomes (ex. acier, cuivre). C'est ce qui rend les métaux conducteurs et malléables.</li></ul>`,
+q:[{q:'Quel type de liaison dans NaCl ?',o:['Ionique','Covalente','Métallique'],a:0,e:'Le sodium cède un électron au chlore : liaison ionique.'},
+{q:'Pourquoi les métaux conduisent-ils l\'électricité ?',o:['Ils sont lourds','Leurs électrons sont libres','Ils sont brillants'],a:1,e:'Les électrons libres de la liaison métallique transportent le courant.'},
+{q:'Quelle liaison dans H₂O ?',o:['Ionique','Métallique','Covalente'],a:2,e:'L\'oxygène et l\'hydrogène partagent des électrons.'}]},
+{t:'La mole et la masse molaire',niv:'Prépa',body:`
+<p>La quantité de matière (en <b>mol</b>) se calcule avec :</p>
+<p style="text-align:center"><b>n = m / M</b></p>
+<p>n en mol, m en g, M (masse molaire) en g/mol.</p>
+<p><b>Exemple :</b> M(H) = 1 et M(O) = 16, donc M(H₂O) = 2×1 + 16 = 18 g/mol. Pour 36 g d'eau : n = 36 / 18 = 2 mol.</p>`,
+q:[{q:'M(CO₂) avec M(C)=12 et M(O)=16 ?',o:['28 g/mol','44 g/mol','56 g/mol'],a:1,e:'12 + 2×16 = 44 g/mol.'},
+{q:'Combien de moles dans 88 g de CO₂ ?',o:['1 mol','2 mol','4 mol'],a:1,e:'n = 88 / 44 = 2 mol.'},
+{q:'Quelle masse pour 3 mol d\'eau (M = 18 g/mol) ?',o:['54 g','6 g','21 g'],a:0,e:'m = n × M = 3 × 18 = 54 g.'}]},
+{t:'Chimie des matériaux de construction',niv:'L1',body:`
+<ul><li><b>Ciment</b> : calcaire + argile cuits vers 1450 °C donnent le clinker, broyé avec un peu de gypse.</li>
+<li><b>Béton</b> = ciment + eau + sable + gravier.</li>
+<li>Le béton durcit par <b>hydratation du ciment</b> (réaction chimique avec l'eau), pas par simple séchage.</li>
+<li><b>Rouille</b> : oxydation du fer en présence d'eau et d'oxygène. Dans le béton armé, l'alcalinité du béton protège l'acier.</li></ul>`,
+q:[{q:'Composition du béton ?',o:['Ciment + eau + sable + gravier','Ciment + sable seulement','Argile + eau'],a:0,e:'Ciment, eau, sable (granulats fins) et gravier (granulats gros).'},
+{q:'La rouille est une…',o:['dissolution','oxydation du fer','fusion'],a:1,e:'Le fer s\'oxyde avec l\'eau et l\'oxygène.'},
+{q:'Le béton durcit grâce à…',o:['l\'évaporation seule','l\'hydratation du ciment','le froid'],a:1,e:'C\'est une réaction chimique entre le ciment et l\'eau.'}]}
+]},
+{id:'dessin',nom:'Dessin descriptif',ico:'📐',desc:'Géométrie descriptive : méthode de Monge, épures',lessons:[
+{t:'La méthode de Monge',niv:'Prépa',svg:EPURE,body:`
+<p>On projette orthogonalement un objet sur deux plans perpendiculaires : le plan <b>horizontal H</b> et le plan <b>vertical V</b>, qui se coupent selon la <b>ligne de terre (LT)</b>.</p>
+<p>Un point A donne deux projections : <b>a</b> sur H et <b>a′</b> sur V. On rabat H autour de LT pour obtenir l'<b>épure</b> sur une seule feuille.</p>
+<ul><li><b>Cote</b> = distance de A à H, mesurée de a′ à LT.</li>
+<li><b>Éloignement</b> = distance de A à V, mesurée de a à LT.</li>
+<li>a et a′ sont sur une même perpendiculaire à LT : la <b>ligne de rappel</b>.</li></ul>
+<p class="mut">Convention (premier dièdre) : a′ au-dessus de LT, a en dessous.</p>`,
+q:[{q:'La ligne de rappel est…',o:['parallèle à LT','perpendiculaire à LT','inclinée à 45°'],a:1,e:'a et a′ sont alignés sur une perpendiculaire à LT.'},
+{q:'La cote d\'un point se mesure entre…',o:['a et LT','a′ et LT','a et a′'],a:1,e:'La cote est la distance au plan horizontal : de a′ à LT.'},
+{q:'Un point situé sur le plan horizontal H a une cote…',o:['nulle','égale à son éloignement','infinie'],a:0,e:'Il est à distance 0 de H, donc a′ est sur LT.'}]},
+{t:'Les droites en épure',niv:'Prépa',body:`
+<ul><li><b>Horizontale</b> (parallèle à H) : sa projection verticale est parallèle à LT, et sa projection horizontale est en vraie grandeur.</li>
+<li><b>Frontale</b> (parallèle à V) : sa projection horizontale est parallèle à LT, et sa projection verticale est en vraie grandeur.</li>
+<li><b>Verticale</b> (perpendiculaire à H) : sa projection horizontale est un point, sa projection verticale est perpendiculaire à LT en vraie grandeur.</li></ul>`,
+q:[{q:'Une droite horizontale a sa projection verticale…',o:['perpendiculaire à LT','parallèle à LT','réduite à un point'],a:1,e:'Cote constante : a′b′ est parallèle à LT.'},
+{q:'Une droite frontale a sa projection horizontale…',o:['parallèle à LT','réduite à un point','perpendiculaire à LT'],a:0,e:'Éloignement constant : ab est parallèle à LT.'},
+{q:'Une droite verticale se projette sur H en…',o:['un segment','un point','une courbe'],a:1,e:'Elle est perpendiculaire à H : sa projection horizontale est un point.'}]},
+{t:'Les plans et leurs traces',niv:'L1',body:`
+<p>Un plan est défini par ses <b>traces</b> : l'intersection avec H (<b>trace horizontale</b>) et avec V (<b>trace verticale</b>).</p>
+<p>Si le plan n'est pas parallèle à LT, ses deux traces se coupent <b>sur la ligne de terre</b>.</p>`,
+q:[{q:'Où se coupent les deux traces d\'un plan (non parallèle à LT) ?',o:['Sur LT','Sur H seulement','Elles ne se coupent jamais'],a:0,e:'Les traces se rencontrent en un point de la ligne de terre.'},
+{q:'La trace horizontale est l\'intersection du plan avec…',o:['V','H','LT'],a:1,e:'Trace horizontale = plan ∩ H.'}]}
+]},
+{id:'maths',nom:'Maths de l\'architecture',ico:'🧮',desc:'Trigonométrie, surfaces, volumes, échelles',lessons:[
+{t:'Pythagore, trigonométrie et pente',niv:'Prépa',body:`
+<p><b>Pythagore</b> : dans un triangle rectangle, c² = a² + b².</p>
+<p><b>Tangente</b> : tan α = côté opposé / côté adjacent.</p>
+<p><b>Pente d'un toit :</b> demi-portée 4 m, hauteur 1,5 m → tan α = 1,5 / 4 = 0,375, donc α ≈ 20,6°.</p>
+<p><b>Pente en %</b> = hauteur / longueur × 100. Exemple : 1 m de dénivelé sur 10 m = 10 %.</p>`,
+q:[{q:'Triangle rectangle de côtés 3 et 4 : hypoténuse ?',o:['5','7','6'],a:0,e:'√(9 + 16) = 5.'},
+{q:'Toit : demi-portée 4 m, hauteur 1,5 m. tan α = ?',o:['0,375','2,67','5,5'],a:0,e:'1,5 / 4 = 0,375.'},
+{q:'1 m de dénivelé sur 10 m de longueur, pente ?',o:['1 %','10 %','100 %'],a:1,e:'1 / 10 × 100 = 10 %.'}]},
+{t:'Surfaces et volumes',niv:'Prépa',body:`
+<ul><li>Rectangle : L × l &nbsp;|&nbsp; Triangle : b × h / 2 &nbsp;|&nbsp; Cercle : π r²</li>
+<li>Prisme / dalle : surface de base × hauteur</li>
+<li>Cylindre : π r² h &nbsp;|&nbsp; Pyramide : ⅓ × base × h</li></ul>
+<p><b>Exemple :</b> dalle de 5 m × 4 m, épaisseur 0,15 m → 5 × 4 × 0,15 = 3 m³ de béton.</p>`,
+q:[{q:'Dalle 5 m × 4 m × 0,15 m : volume ?',o:['3 m³','20 m³','0,75 m³'],a:0,e:'5 × 4 × 0,15 = 3 m³.'},
+{q:'Aire d\'un cercle de rayon 2 m ?',o:['4 m²','≈ 12,57 m²','≈ 6,28 m²'],a:1,e:'π × 2² = 4π ≈ 12,57 m².'},
+{q:'Pyramide : base 6 m², hauteur 3 m. Volume ?',o:['18 m³','9 m³','6 m³'],a:2,e:'⅓ × 6 × 3 = 6 m³.'}]},
+{t:'Les échelles',niv:'Prépa',body:`
+<p>Échelle <b>1/50</b> : 1 cm sur le plan = 50 cm dans la réalité.</p>
+<p>Plan = réel ÷ dénominateur. Réel = plan × dénominateur.</p>
+<p><b>Exemple :</b> un mur de 6 m à l'échelle 1/100 mesure 600 / 100 = 6 cm sur le plan.</p>`,
+q:[{q:'6 m réels à l\'échelle 1/100 font combien sur le plan ?',o:['6 cm','60 cm','0,6 cm'],a:0,e:'600 cm / 100 = 6 cm.'},
+{q:'8 cm sur un plan au 1/200 : longueur réelle ?',o:['1,6 m','16 m','160 m'],a:1,e:'8 × 200 = 1600 cm = 16 m.'}]}
+]}
+];
+
+/* ===== Contenu supplémentaire ===== */
+DATA[0].lessons.push(
+{t:"Équations chimiques et équilibrage",niv:"Prépa",body:`
+<p>Dans une réaction chimique, les atomes ne disparaissent pas : leur nombre est le même avant et après. On <b>équilibre</b> l'équation avec des coefficients devant chaque formule.</p>
+<p><b>Exemple :</b> 2 H₂ + O₂ → 2 H₂O. À gauche : 4 H et 2 O. À droite : 4 H et 2 O. L'équation est équilibrée.</p>
+<p><b>Combustion du méthane :</b> CH₄ + 2 O₂ → CO₂ + 2 H₂O.</p>`,
+q:[{q:"Dans une équation équilibrée, on conserve…",o:["les molécules","les atomes","les couleurs"],a:1,e:"Le nombre de chaque sorte d'atome est identique des deux côtés."},
+{q:"CH₄ + ? O₂ → CO₂ + 2 H₂O. Quel coefficient devant O₂ ?",o:["1","2","4"],a:1,e:"À droite il y a 2 + 2 = 4 atomes d'oxygène, donc 2 O₂ à gauche."},
+{q:"2 H₂ + O₂ → ? H₂O. Quel coefficient devant H₂O ?",o:["1","2","3"],a:1,e:"4 atomes d'hydrogène à gauche donnent 2 molécules H₂O (2 × 2 = 4)."}]},
+{t:"Acides, bases et pH",niv:"Prépa",body:`
+<p>Le <b>pH</b> mesure l'acidité d'une solution, sur une échelle de 0 à 14 (à 25 °C).</p>
+<ul><li>pH &lt; 7 : solution <b>acide</b></li><li>pH = 7 : solution <b>neutre</b> (eau pure)</li><li>pH &gt; 7 : solution <b>basique</b></li></ul>
+<p>Chaque unité de pH correspond à un facteur 10 sur la concentration en ions H₃O⁺.</p>
+<p><b>En construction :</b> le béton frais est très basique (pH autour de 12 à 13). La pluie acide attaque le calcaire et le marbre.</p>`,
+q:[{q:"Une solution de pH 3 est…",o:["acide","neutre","basique"],a:0,e:"Un pH inférieur à 7 indique une solution acide."},
+{q:"Une solution de pH 5 est… par rapport à une solution de pH 6.",o:["10 fois plus acide","2 fois plus acide","10 fois moins acide"],a:0,e:"Une unité de pH correspond à un facteur 10."},
+{q:"La pluie acide attaque surtout…",o:["le calcaire et le marbre","l'acier inoxydable seulement","le verre uniquement"],a:0,e:"Le carbonate de calcium réagit avec les acides."}]},
+{t:"États de la matière et changements d'état",niv:"Prépa",body:`
+<p>La matière existe sous trois états : <b>solide</b>, <b>liquide</b> et <b>gaz</b>.</p>
+<ul><li>Solide → liquide : <b>fusion</b></li><li>Liquide → gaz : <b>vaporisation</b></li><li>Gaz → liquide : <b>condensation</b></li><li>Liquide → solide : <b>solidification</b></li></ul>
+<p>À la pression atmosphérique normale, l'eau gèle à 0 °C et bout à 100 °C.</p>
+<p><b>À retenir en construction :</b> l'eau augmente de volume en gelant. Dans les pays froids, l'eau qui gèle dans une pierre poreuse ou un tuyau peut les fissurer.</p>`,
+q:[{q:"Le passage de solide à liquide s'appelle…",o:["la fusion","la condensation","la sublimation"],a:0,e:"Solide vers liquide : fusion."},
+{q:"À pression normale, l'eau bout à…",o:["50 °C","100 °C","212 °C"],a:1,e:"L'eau bout à 100 °C à la pression atmosphérique normale."},
+{q:"Quand l'eau gèle, son volume…",o:["diminue","augmente","ne change pas"],a:1,e:"La glace occupe un peu plus de volume que l'eau liquide."}]}
+);
+
+DATA[1].lessons.push(
+{t:"Plan, coupe et façade",niv:"Prépa",body:`
+<p>Un projet d'architecture se décrit avec plusieurs vues, toutes obtenues par projection orthogonale :</p>
+<ul><li><b>Plan</b> : coupe horizontale du bâtiment à environ 1 m du sol, vue de dessus. Il montre les murs, les portes, les fenêtres, les pièces.</li>
+<li><b>Coupe</b> : coupe verticale. Elle montre les hauteurs, les niveaux, les planchers et la toiture.</li>
+<li><b>Façade (élévation)</b> : vue de l'extérieur d'un côté du bâtiment, sans coupe.</li>
+<li><b>Plan de masse</b> : vue de dessus de l'ensemble du terrain avec les bâtiments et leur environnement.</li></ul>`,
+q:[{q:"Le plan d'un bâtiment est…",o:["une coupe horizontale vue de dessus","une vue de face de l'extérieur","une coupe verticale"],a:0,e:"On coupe le bâtiment horizontalement et on regarde d'en haut."},
+{q:"Quelle vue montre les hauteurs des étages ?",o:["Le plan de masse","La coupe","Le plan"],a:1,e:"La coupe verticale montre les niveaux et les hauteurs."},
+{q:"La façade montre…",o:["l'aspect extérieur d'un côté","l'intérieur des pièces","le terrain vu du ciel"],a:0,e:"C'est l'élévation de l'extérieur."}]},
+{t:"La perspective",niv:"Prépa",body:`
+<p>La perspective représente la profondeur sur une feuille plate.</p>
+<ul><li><b>Ligne d'horizon</b> : elle est à la hauteur des yeux de l'observateur.</li>
+<li><b>Point de fuite</b> : point de l'horizon où se rejoignent les lignes parallèles qui s'éloignent.</li>
+<li><b>Perspective à un point de fuite</b> (frontale) : les lignes perpendiculaires au tableau convergent vers un seul point.</li>
+<li><b>Perspective à deux points de fuite</b> (d'angle) : on voit le bâtiment par un angle, avec deux points de fuite sur la ligne d'horizon.</li></ul>`,
+q:[{q:"La ligne d'horizon est située…",o:["à la hauteur des yeux","au sol","au sommet du bâtiment"],a:0,e:"Elle correspond à la hauteur des yeux de l'observateur."},
+{q:"Une vue d'angle d'un bâtiment utilise…",o:["un point de fuite","deux points de fuite","aucun point de fuite"],a:1,e:"Deux familles de lignes fuyantes donnent deux points de fuite."},
+{q:"Où se trouvent les points de fuite ?",o:["Sur la ligne d'horizon","Sous le sol","Au centre de la feuille toujours"],a:0,e:"Ils sont sur la ligne d'horizon."}]},
+{t:"L'axonométrie",niv:"L1",body:`
+<p>L'axonométrie représente un objet en volume avec des lignes parallèles (sans point de fuite).</p>
+<ul><li><b>Isométrique</b> : les trois axes font 120° entre eux et on utilise la même échelle sur les trois.</li>
+<li><b>Cavalière</b> : la face avant est dessinée en vraie grandeur. Les lignes de fuite partent souvent à 45° et sont raccourcies (par exemple coefficient 0,5).</li></ul>
+<p><b>Exemple :</b> une profondeur réelle de 4 m, dessinée en cavalière avec le coefficient 0,5, se trace comme 2 m.</p>`,
+q:[{q:"En isométrique, l'angle entre les axes est de…",o:["90°","120°","45°"],a:1,e:"Les trois axes sont espacés de 120°."},
+{q:"En perspective cavalière, quelle face est en vraie grandeur ?",o:["La face avant","La face arrière seulement","Aucune"],a:0,e:"La face parallèle au plan du dessin n'est pas déformée."},
+{q:"Profondeur de 4 m, coefficient 0,5 : longueur tracée ?",o:["2 m","4 m","8 m"],a:0,e:"4 × 0,5 = 2."}]}
+);
+
+DATA[2].lessons.push(
+{t:"Cercles, périmètres et π",niv:"Prépa",body:`
+<ul><li>Périmètre d'un cercle : <b>2 π r</b> (ou π × diamètre)</li>
+<li>Périmètre d'un rectangle : <b>2 (L + l)</b></li>
+<li>π ≈ 3,14</li></ul>
+<p><b>Exemple :</b> une colonne de diamètre 0,5 m a une circonférence de π × 0,5 ≈ 1,57 m.</p>`,
+q:[{q:"Circonférence d'un cercle de rayon 3 m ?",o:["≈ 9,42 m","≈ 18,85 m","≈ 28,3 m"],a:1,e:"2 × π × 3 ≈ 18,85 m."},
+{q:"Colonne de diamètre 0,5 m : circonférence ?",o:["≈ 1,57 m","≈ 0,79 m","≈ 3,14 m"],a:0,e:"π × 0,5 ≈ 1,57 m."},
+{q:"Périmètre d'un rectangle de 8 m sur 5 m ?",o:["13 m","26 m","40 m"],a:1,e:"2 × (8 + 5) = 26 m."}]},
+{t:"Proportionnalité et pourcentages",niv:"Prépa",body:`
+<p><b>Règle de trois :</b> si 5 m² de mur demandent 60 briques, alors 1 m² demande 60 / 5 = 12 briques, et 12 m² demandent 12 × 12 = 144 briques.</p>
+<p><b>Pourcentages :</b> augmenter de 15 %, c'est multiplier par 1,15. Diminuer de 20 %, c'est multiplier par 0,8.</p>
+<p><b>En chantier :</b> on prévoit souvent environ 10 % de pertes (coupes, casse) sur le carrelage.</p>`,
+q:[{q:"5 m² de mur = 60 briques. Pour 12 m² ?",o:["120 briques","144 briques","72 briques"],a:1,e:"60 / 5 = 12 briques par m², donc 12 × 12 = 144."},
+{q:"100 m² augmentés de 15 % donnent…",o:["115 m²","150 m²","110 m²"],a:0,e:"100 × 1,15 = 115."},
+{q:"50 m² de carrelage + 10 % de pertes : quantité à acheter ?",o:["55 m²","60 m²","51 m²"],a:0,e:"50 × 1,10 = 55 m²."}]},
+{t:"Thalès et triangles semblables",niv:"L1",body:`
+<p><b>Théorème de Thalès :</b> si deux droites sont coupées par des parallèles, les longueurs correspondantes sont proportionnelles.</p>
+<p>Des <b>triangles semblables</b> ont les mêmes angles : leurs côtés sont dans le même rapport.</p>
+<p><b>Application :</b> mesurer la hauteur d'un bâtiment avec son ombre. Une personne de 1,8 m a une ombre de 3 m. À la même heure, l'ombre du bâtiment mesure 50 m. Le rapport est 1,8 / 3 = 0,6, donc la hauteur est 0,6 × 50 = 30 m.</p>`,
+q:[{q:"Condition pour appliquer Thalès :",o:["des droites parallèles","des angles droits seulement","des cercles"],a:0,e:"Il faut des droites parallèles qui coupent deux autres droites."},
+{q:"Ombre du bâtiment : 50 m. Personne de 1,8 m, ombre 3 m. Hauteur du bâtiment ?",o:["27 m","30 m","90 m"],a:1,e:"(1,8 / 3) × 50 = 30 m."},
+{q:"Des triangles semblables ont…",o:["les mêmes angles","la même aire","les mêmes côtés"],a:0,e:"Mêmes angles, côtés proportionnels."}]},
+{t:"Équations du premier degré",niv:"L1",body:`
+<p>Pour résoudre une équation comme <b>3x + 5 = 20</b>, on isole x : 3x = 15, donc x = 5.</p>
+<p><b>Problème type :</b> un rectangle a une longueur deux fois plus grande que sa largeur et un périmètre de 36 m. Si l = largeur, alors 2 (2l + l) = 36, donc 6l = 36, l = 6 m et L = 12 m.</p>`,
+q:[{q:"Résous 2x − 4 = 10.",o:["x = 3","x = 7","x = 12"],a:1,e:"2x = 14, donc x = 7."},
+{q:"Résous x / 4 = 6.",o:["x = 24","x = 1,5","x = 10"],a:0,e:"x = 6 × 4 = 24."},
+{q:"Rectangle : L = 2l, périmètre 36 m. Quelle est la largeur ?",o:["6 m","9 m","12 m"],a:0,e:"6l = 36, donc l = 6 m."}]}
+);
+
+DATA.push(
+{id:"physique",nom:"Physique",ico:"⚙️",desc:"Forces, pression, moments, chaleur",lessons:[
+{t:"Forces et équilibre",niv:"Prépa",body:`
+<p>Une force se mesure en <b>newtons (N)</b>. Le <b>poids</b> est la force d'attraction de la Terre : <b>P = m × g</b>, avec g ≈ 9,8 N/kg (on prend souvent 10).</p>
+<p><b>Exemple :</b> une personne de 50 kg pèse environ 50 × 9,8 = 490 N.</p>
+<p>Un objet est à l'équilibre quand la somme des forces qui s'exercent sur lui est nulle. Un meuble posé au sol : son poids vers le bas est compensé par la réaction du sol vers le haut.</p>`,
+q:[{q:"L'unité de force est…",o:["le newton","le kilogramme","le pascal"],a:0,e:"La force se mesure en newtons (N)."},
+{q:"Poids d'une masse de 50 kg (g = 9,8 N/kg) ?",o:["50 N","490 N","5 N"],a:1,e:"P = 50 × 9,8 = 490 N."},
+{q:"À l'équilibre, la somme des forces est…",o:["nulle","maximale","égale au poids"],a:0,e:"Les forces se compensent."}]},
+{t:"Pression et contrainte",niv:"Prépa",body:`
+<p><b>Pression = force / surface</b> : P = F / S. Unité : le pascal (Pa), 1 Pa = 1 N/m².</p>
+<p><b>Exemple :</b> 10 000 N répartis sur 2 m² donnent 5 000 Pa.</p>
+<p><b>Pourquoi les fondations sont larges :</b> pour une même charge, une surface plus grande donne une pression plus faible sur le sol.</p>`,
+q:[{q:"12 000 N sur 3 m² : pression ?",o:["4 000 Pa","36 000 Pa","400 Pa"],a:0,e:"12 000 / 3 = 4 000 Pa."},
+{q:"Si on double la surface d'appui, la pression…",o:["double","est divisée par 2","ne change pas"],a:1,e:"P = F / S : S double, P est divisée par 2."},
+{q:"1 pascal est égal à…",o:["1 N/m²","1 N·m","1 kg/m"],a:0,e:"Pa = N/m²."}]},
+{t:"Moment d'une force",niv:"L1",body:`
+<p>Le <b>moment</b> d'une force mesure sa capacité à faire tourner un objet : <b>M = F × d</b>, en N·m. Ici d est le <b>bras de levier</b>, la distance perpendiculaire entre l'axe de rotation et la ligne d'action de la force.</p>
+<p><b>Exemple :</b> une force de 200 N à 3 m de l'axe donne M = 600 N·m.</p>
+<p><b>Équilibre :</b> la somme des moments est nulle. Balançoire : 300 N à 2 m (600 N·m) est équilibré par une force F à 3 m telle que F × 3 = 600, donc F = 200 N.</p>`,
+q:[{q:"Moment d'une force de 200 N à 3 m de l'axe ?",o:["600 N·m","67 N·m","203 N·m"],a:0,e:"M = 200 × 3 = 600 N·m."},
+{q:"Pour faire tourner plus facilement une porte, on pousse…",o:["près des gonds","loin des gonds","au milieu"],a:1,e:"Un bras de levier plus grand donne un moment plus grand."},
+{q:"Balançoire : 300 N à 2 m. Quelle force à 3 m pour équilibrer ?",o:["200 N","450 N","100 N"],a:0,e:"300 × 2 = F × 3, donc F = 200 N."}]},
+{t:"Chaleur et isolation thermique",niv:"L1",body:`
+<p>La chaleur se transmet de trois façons :</p>
+<ul><li><b>Conduction</b> : à travers un matériau solide (un mur).</li>
+<li><b>Convection</b> : par le mouvement d'un fluide (l'air chaud monte).</li>
+<li><b>Rayonnement</b> : sans contact (le soleil chauffe la terre).</li></ul>
+<p>Un bon isolant a une <b>conductivité thermique λ faible</b> (en W/(m·K)). Ordre de grandeur : béton ≈ 1,5, laine minérale ≈ 0,04.</p>`,
+q:[{q:"La chaleur qui traverse un mur solide se transmet par…",o:["conduction","convection","rayonnement"],a:0,e:"Dans un solide, c'est la conduction."},
+{q:"Un bon isolant thermique a une conductivité λ…",o:["faible","élevée","nulle toujours"],a:0,e:"Plus λ est petite, moins le matériau laisse passer la chaleur."},
+{q:"La chaleur du soleil nous parvient par…",o:["rayonnement","conduction","convection"],a:0,e:"Le rayonnement traverse le vide spatial."}]}
+]},
+{id:"materiaux",nom:"Matériaux de construction",ico:"🧱",desc:"Béton armé, bois, acier, briques, terre",lessons:[
+{t:"Béton et béton armé",niv:"Prépa",body:`
+<p>Le béton résiste très bien à la <b>compression</b> (écrasement) mais mal à la <b>traction</b> (étirement). L'acier résiste très bien à la traction.</p>
+<p>Le <b>béton armé</b> combine les deux : on place des barres d'acier là où la pièce est tendue (par exemple en bas d'une poutre qui fléchit).</p>
+<p>Sans armatures, une poutre en béton se fissure et casse dès que la partie basse est tendue.</p>`,
+q:[{q:"Le béton seul résiste mal à…",o:["la compression","la traction","la chaleur modérée"],a:1,e:"Sa résistance à la traction est faible."},
+{q:"Pourquoi ajoute-t-on de l'acier dans le béton ?",o:["Pour résister à la traction","Pour le colorer","Pour le rendre plus léger"],a:0,e:"L'acier reprend les efforts de traction."},
+{q:"Dans une poutre qui fléchit, les armatures principales se placent…",o:["en bas, côté tendu","au centre seulement","sur le dessus uniquement"],a:0,e:"La face inférieure est tendue pour une poutre posée sur deux appuis."}]},
+{t:"Le bois et l'acier",niv:"Prépa",body:`
+<p><b>Bois :</b> matériau renouvelable et léger, bon rapport résistance / poids. Il craint l'humidité prolongée, les insectes (termites) et le feu s'il n'est pas traité.</p>
+<p><b>Acier :</b> très résistant, permet de grandes portées et la préfabrication. Il rouille s'il n'est pas protégé et perd fortement sa résistance à haute température, donc il faut le protéger contre l'incendie.</p>`,
+q:[{q:"Un point faible du bois est…",o:["l'humidité prolongée","la résistance à la traction","le poids"],a:0,e:"L'humidité favorise la pourriture et les insectes."},
+{q:"L'acier non protégé risque de…",o:["rouiller","pourrir","fondre à température ambiante"],a:0,e:"Il s'oxyde avec l'eau et l'oxygène."},
+{q:"À haute température (incendie), l'acier…",o:["perd beaucoup de résistance","devient plus solide","ne change pas"],a:0,e:"Sa résistance chute fortement à haute température."}]},
+{t:"Briques, blocs, pierre et terre",niv:"Prépa",body:`
+<ul><li><b>Brique cuite</b> : argile moulée puis cuite au four.</li>
+<li><b>Parpaing</b> : bloc creux en béton.</li>
+<li><b>Pierre naturelle</b> : résistante et durable, mais lourde et plus chère à tailler et à transporter.</li>
+<li><b>Terre crue</b> (adobe, briques de terre) : fabriquée à partir de terre séchée, avec un faible coût énergétique. Elle régule bien l'humidité et la chaleur, mais craint l'eau et demande une bonne protection (toiture débordante, soubassement).</li></ul>`,
+q:[{q:"Une brique cuite est fabriquée à partir…",o:["d'argile cuite","de sable seul","de ciment cuit"],a:0,e:"L'argile moulée est cuite au four."},
+{q:"Un parpaing est…",o:["un bloc de béton","une brique en bois","une pierre taillée"],a:0,e:"C'est un bloc, généralement creux, en béton."},
+{q:"Le principal danger pour la terre crue est…",o:["l'eau","le soleil","le vent léger"],a:0,e:"La terre crue s'érode et s'affaiblit au contact prolongé de l'eau."}]}
+]},
+{id:"histoire",nom:"Histoire de l'architecture",ico:"🏛️",desc:"De l'Antiquité à l'architecture moderne",lessons:[
+{t:"Égypte et Grèce antique",niv:"Prépa",body:`
+<p><b>Égypte :</b> pyramides de Gizeh (vers 2500 av. J.-C.), temples en pierre aux murs épais et aux colonnes massives.</p>
+<p><b>Grèce :</b> le <b>Parthénon</b> (Athènes, 5ᵉ siècle av. J.-C.) est le temple le plus célèbre. Les Grecs ont codifié trois <b>ordres</b> de colonnes :</p>
+<ul><li><b>Dorique</b> : sobre, chapiteau simple</li><li><b>Ionique</b> : chapiteau à volutes</li><li><b>Corinthien</b> : chapiteau décoré de feuilles d'acanthe</li></ul>`,
+q:[{q:"Où se trouve le Parthénon ?",o:["Athènes","Rome","Le Caire"],a:0,e:"Il couronne l'Acropole d'Athènes."},
+{q:"Quel ordre grec a un chapiteau à feuilles d'acanthe ?",o:["Dorique","Ionique","Corinthien"],a:2,e:"Le corinthien est le plus décoré."},
+{q:"L'ordre le plus sobre est…",o:["dorique","ionique","corinthien"],a:0,e:"Le dorique a un chapiteau simple."}]},
+{t:"L'architecture romaine",niv:"Prépa",body:`
+<p>Les Romains utilisent l'<b>arc en plein cintre</b> (demi-circulaire), la <b>voûte</b>, la <b>coupole</b> et un béton très résistant. Cela leur permet de couvrir de grands espaces.</p>
+<ul><li><b>Panthéon</b> (Rome, vers 125 apr. J.-C.) : grande coupole en béton.</li>
+<li><b>Colisée</b> : amphithéâtre pour les spectacles.</li>
+<li><b>Aqueducs</b> : ponts à arcades qui transportent l'eau.</li></ul>`,
+q:[{q:"Quelle forme d'arc caractérise l'architecture romaine ?",o:["Plein cintre","Brisé","En fer à cheval seulement"],a:0,e:"Arc en demi-cercle."},
+{q:"Le Panthéon de Rome est célèbre pour sa…",o:["coupole","flèche","tour penchée"],a:0,e:"Sa coupole en béton est une prouesse technique."},
+{q:"Un aqueduc sert à…",o:["transporter l'eau","faire des spectacles","défendre une ville"],a:0,e:"Il conduit l'eau, souvent sur des arcades."}]},
+{t:"Gothique et Renaissance",niv:"L1",body:`
+<p><b>Gothique</b> (12ᵉ au 15ᵉ siècle) : <b>arc brisé</b>, <b>voûte sur croisée d'ogives</b>, <b>arcs-boutants</b> qui reprennent la poussée des voûtes, grandes verrières et vitraux. Exemple : Notre-Dame de Paris.</p>
+<p><b>Renaissance</b> (à partir du 15ᵉ siècle, en Italie) : retour aux modèles antiques, symétrie et proportions. Brunelleschi réalise la coupole de la cathédrale de Florence, achevée en 1436.</p>`,
+q:[{q:"Quel type d'arc est typique du gothique ?",o:["Arc brisé","Plein cintre","Arc plat"],a:0,e:"L'arc brisé est pointu."},
+{q:"Les arcs-boutants servent à…",o:["reprendre la poussée des voûtes","décorer les façades","éclairer la nef"],a:0,e:"Ils contrebutent les murs extérieurs."},
+{q:"Qui a construit la coupole de la cathédrale de Florence ?",o:["Brunelleschi","Le Corbusier","Gropius"],a:0,e:"Filippo Brunelleschi, achevée en 1436."}]},
+{t:"L'architecture moderne",niv:"L1",body:`
+<p>Le <b>Bauhaus</b>, école fondée en 1919 en Allemagne par Walter Gropius, associe art, artisanat et industrie.</p>
+<p><b>Le Corbusier</b> résume l'architecture moderne en cinq points : <b>pilotis</b>, <b>toit-terrasse</b>, <b>plan libre</b>, <b>façade libre</b> et <b>fenêtre en bandeau</b>. La villa Savoye (Poissy, 1931) les applique.</p>
+<p>Mies van der Rohe est associé à la formule « Less is more » (moins, c'est plus).</p>`,
+q:[{q:"Qui a fondé le Bauhaus en 1919 ?",o:["Walter Gropius","Le Corbusier","Brunelleschi"],a:0,e:"Walter Gropius, à Weimar."},
+{q:"Les pilotis font partie…",o:["des cinq points de Le Corbusier","des ordres grecs","de l'art gothique"],a:0,e:"Ils soulèvent le bâtiment et libèrent le sol."},
+{q:"La villa Savoye est une œuvre de…",o:["Le Corbusier","Gropius","Mies van der Rohe"],a:0,e:"Elle a été construite à Poissy en 1931."}]}
+]}
+);
+
+/* ===== Contenu supplémentaire 2 : chimie et dessin descriptif ===== */
+DATA[0].lessons.push(
+{t:"Structure électronique et valence",niv:"Prépa",body:`
+<p>Les électrons occupent des couches : <b>K</b> (2 électrons au maximum), <b>L</b> (8 au maximum), <b>M</b> (8 au maximum pour les éléments jusqu'à Z = 18).</p>
+<p><b>Exemples :</b> Na (Z = 11) : K2 L8 M1, donc 1 électron de valence. Cl (Z = 17) : K2 L8 M7, donc 7 électrons de valence.</p>
+<p>Les électrons de la dernière couche sont les <b>électrons de valence</b>. Les gaz nobles (He, Ne, Ar) ont une dernière couche pleine : ils sont très stables. Les autres atomes cherchent à atteindre cette stabilité (règle de l'octet).</p>`,
+q:[{q:"Combien d'électrons de valence pour Na (Z = 11) ?",o:["1","8","11"],a:0,e:"Répartition K2 L8 M1 : 1 électron sur la dernière couche."},
+{q:"Combien d'électrons de valence pour Cl (Z = 17) ?",o:["1","7","17"],a:1,e:"Répartition K2 L8 M7."},
+{q:"Pourquoi les gaz nobles sont-ils stables ?",o:["Leur dernière couche est pleine","Ils sont lourds","Ils n'ont pas d'électrons"],a:0,e:"Une couche externe pleine donne une grande stabilité."}]},
+{t:"Solutions et concentration",niv:"Prépa",body:`
+<ul><li><b>Concentration molaire</b> : C = n / V (mol/L)</li>
+<li><b>Concentration massique</b> : Cm = m / V (g/L)</li>
+<li><b>Dilution</b> : C₁ × V₁ = C₂ × V₂ (la quantité de matière ne change pas)</li></ul>
+<p><b>Exemple :</b> 0,5 mol dissoute dans 2 L donne C = 0,25 mol/L.</p>
+<p><b>Dilution :</b> on prend 100 mL d'une solution à 1 mol/L et on complète à 500 mL. C₂ = 1 × 100 / 500 = 0,2 mol/L.</p>`,
+q:[{q:"0,5 mol dans 2 L : concentration ?",o:["0,25 mol/L","1 mol/L","4 mol/L"],a:0,e:"C = 0,5 / 2 = 0,25 mol/L."},
+{q:"100 mL à 1 mol/L complétés à 500 mL : nouvelle concentration ?",o:["0,2 mol/L","5 mol/L","0,5 mol/L"],a:0,e:"C₂ = 1 × 100 / 500 = 0,2 mol/L."},
+{q:"Cm = m / V s'exprime en…",o:["g/L","mol/L","N/m²"],a:0,e:"Masse en grammes divisée par volume en litres."}]},
+{t:"Oxydoréduction et corrosion",niv:"L1",body:`
+<ul><li><b>Oxydation</b> : perte d'électrons. Exemple : Fe → Fe²⁺ + 2 e⁻</li>
+<li><b>Réduction</b> : gain d'électrons.</li></ul>
+<p>La corrosion de l'acier est une oxydation du fer. Pour s'en protéger :</p>
+<ul><li><b>Peinture</b> : isole le métal de l'air et de l'eau</li>
+<li><b>Galvanisation</b> : couche de zinc. Le zinc s'oxyde à la place du fer.</li>
+<li><b>Acier inoxydable</b> : contient du chrome, qui forme une fine couche protectrice</li></ul>`,
+q:[{q:"L'oxydation est…",o:["une perte d'électrons","un gain d'électrons","un changement d'état"],a:0,e:"Oxydation = perte d'électrons."},
+{q:"La galvanisation consiste à…",o:["recouvrir l'acier de zinc","peindre l'acier en blanc","chauffer l'acier"],a:0,e:"Le zinc protège le fer en s'oxydant en premier."},
+{q:"Fe → Fe²⁺ + 2 e⁻ est une…",o:["oxydation","réduction","dilution"],a:0,e:"Le fer perd deux électrons."}]},
+{t:"La chaux et le plâtre",niv:"L1",body:`
+<p><b>Cycle de la chaux :</b></p>
+<ul><li>Cuisson du calcaire vers 900 °C : CaCO₃ → CaO + CO₂ (chaux vive)</li>
+<li>Extinction avec de l'eau : CaO + H₂O → Ca(OH)₂ (chaux éteinte), réaction qui dégage beaucoup de chaleur</li>
+<li>Durcissement à l'air : Ca(OH)₂ + CO₂ → CaCO₃ + H₂O (carbonatation)</li></ul>
+<p><b>Plâtre :</b> le gypse (CaSO₄·2H₂O) est chauffé vers 150 °C, il perd une partie de son eau. Mélangé à l'eau, il durcit en reprenant cette eau.</p>`,
+q:[{q:"La chaux vive est…",o:["CaO","Ca(OH)₂","CaCO₃"],a:0,e:"CaO s'obtient par cuisson du calcaire."},
+{q:"L'extinction de la chaux vive avec de l'eau…",o:["dégage de la chaleur","refroidit le mélange","ne produit rien"],a:0,e:"La réaction est fortement exothermique."},
+{q:"Le plâtre est fabriqué à partir de…",o:["gypse","argile","sable"],a:0,e:"On chauffe le gypse vers 150 °C."}]},
+{t:"Le verre",niv:"L1",body:`
+<p>Le verre courant est fabriqué à partir de <b>sable</b> (silice SiO₂), de <b>soude</b> (carbonate de sodium) et de <b>calcaire</b>, fondus vers 1 500 °C.</p>
+<ul><li>Le verre est <b>amorphe</b> : ses atomes ne sont pas rangés en cristal.</li>
+<li><b>Verre trempé</b> : refroidi brusquement, plus résistant, il se brise en petits morceaux.</li>
+<li><b>Verre feuilleté</b> : plusieurs verres collés avec un film plastique, les morceaux restent en place s'il casse.</li></ul>`,
+q:[{q:"Quelle matière première principale pour le verre ?",o:["Le sable (silice)","Le fer","Le bois"],a:0,e:"La silice SiO₂ est le constituant principal."},
+{q:"Le verre est un solide…",o:["amorphe","cristallin parfait","liquide"],a:0,e:"Ses atomes n'ont pas d'arrangement en cristal."},
+{q:"Quel verre garde les morceaux en place quand il casse ?",o:["Le verre feuilleté","Le verre trempé","Aucun"],a:0,e:"Le film plastique intercalaire retient les fragments."}]},
+{t:"Polymères et matières plastiques",niv:"L1",body:`
+<p>Un <b>polymère</b> est formé de très longues chaînes de petites molécules répétées (les monomères).</p>
+<ul><li><b>PVC</b> : tuyaux, menuiseries</li><li><b>Polyéthylène (PE)</b> : tuyaux, films</li><li><b>Polystyrène expansé</b> : isolant thermique</li></ul>
+<p><b>Thermoplastiques</b> : ramollissent quand on les chauffe et peuvent être remodelés. <b>Thermodurcissables</b> (résines époxy par exemple) : durcissent de façon définitive.</p>`,
+q:[{q:"Un thermoplastique…",o:["ramollit à la chaleur","durcit définitivement à la chaleur","est toujours liquide"],a:0,e:"On peut le chauffer et le remodeler."},
+{q:"Le polystyrène expansé sert surtout à…",o:["isoler","supporter les charges","conduire l'électricité"],a:0,e:"C'est un isolant thermique."},
+{q:"Un polymère est formé de…",o:["longues chaînes de monomères","un seul atome","cristaux de sel"],a:0,e:"Les monomères se répètent pour former la chaîne."}]}
+);
+
+DATA[1].lessons.push(
+{t:"Conventions de dessin et cotation",niv:"Prépa",body:`
+<ul><li><b>Trait continu fort</b> : contours et arêtes visibles</li>
+<li><b>Trait interrompu fin (tirets)</b> : contours et arêtes cachés</li>
+<li><b>Trait mixte fin (point-tiret)</b> : axes de symétrie et axes de révolution</li>
+<li><b>Trait continu fin</b> : lignes de cote, lignes d'attache, hachures</li></ul>
+<p>Une cote indique une dimension réelle (pas celle mesurée sur le dessin). L'unité (mm, cm ou m) est précisée sur le dessin.</p>`,
+q:[{q:"Les arêtes cachées se dessinent en…",o:["tirets fins","trait continu fort","point-tiret"],a:0,e:"Trait interrompu fin pour ce qui est caché."},
+{q:"Un axe de symétrie se dessine en…",o:["trait mixte fin (point-tiret)","trait continu fort","tirets épais"],a:0,e:"Le trait mixte fin sert pour les axes."},
+{q:"Une cote indique…",o:["la dimension réelle","la mesure au double décimètre sur la feuille","la couleur"],a:0,e:"La cote donne la valeur réelle, indépendante de l'échelle."}]},
+{t:"Tracés géométriques de base",niv:"Prépa",body:`
+<ul><li><b>Médiatrice d'un segment AB</b> : avec un compas ouvert à plus de la moitié de AB, trace des arcs depuis A puis depuis B. Joins leurs deux points d'intersection : la droite obtenue passe par le milieu de AB et lui est perpendiculaire.</li>
+<li><b>Bissectrice d'un angle</b> : droite qui le partage en deux angles égaux.</li>
+<li><b>Division d'un segment en n parties égales</b> : on trace une demi-droite auxiliaire graduée en n parties égales, puis on joint l'extrémité au segment et on trace des parallèles (théorème de Thalès).</li></ul>`,
+q:[{q:"La médiatrice de AB passe par…",o:["le milieu de AB et lui est perpendiculaire","A seulement","B seulement"],a:0,e:"C'est l'ensemble des points à égale distance de A et de B."},
+{q:"La bissectrice d'un angle…",o:["le partage en deux angles égaux","est perpendiculaire à un côté","est toujours horizontale"],a:0,e:"Elle coupe l'angle en deux parties égales."},
+{q:"Pour diviser un segment en 5 parties égales, on utilise…",o:["le théorème de Thalès","le théorème de Pythagore","la trigonométrie"],a:0,e:"On trace des parallèles à partir d'une demi-droite auxiliaire graduée."}]},
+{t:"Le plan de profil",niv:"L1",body:`
+<p>Le <b>plan de profil</b> est perpendiculaire à H et à V, donc perpendiculaire à LT. On l'utilise pour obtenir une troisième projection, la <b>vue de profil</b> (vue de gauche ou de droite).</p>
+<p>Sur la vue de profil, on lit à la fois la <b>cote</b> (comme sur V) et l'<b>éloignement</b> (comme sur H).</p>
+<p>Une <b>droite de profil</b> (contenue dans un plan de profil) a ses projections horizontale et verticale toutes les deux perpendiculaires à LT.</p>`,
+q:[{q:"Le plan de profil est…",o:["perpendiculaire à LT","parallèle à LT","parallèle à H"],a:0,e:"Il est perpendiculaire à H et à V, donc à LT."},
+{q:"Une droite de profil a ses projections…",o:["perpendiculaires à LT","parallèles à LT","réduites à un point"],a:0,e:"Les deux projections sont portées par des perpendiculaires à LT."},
+{q:"La vue de profil montre…",o:["la cote et l'éloignement","la cote seulement","aucune dimension"],a:0,e:"On y lit les deux dimensions de position."}]},
+{t:"Vraie grandeur d'un segment",niv:"L1",body:`
+<p>Un segment quelconque se projette plus court que sa longueur réelle. On retrouve sa <b>vraie grandeur</b> par un triangle rectangle :</p>
+<ul><li>un côté = la projection horizontale ab</li><li>l'autre côté = la différence de cotes (hauteur entre les deux extrémités)</li><li>l'hypoténuse = vraie grandeur du segment</li></ul>
+<p><b>Exemple :</b> ab = 4 m et différence de cotes = 3 m, donc VG = √(4² + 3²) = 5 m.</p>`,
+q:[{q:"ab = 4 m, différence de cotes = 3 m. Vraie grandeur ?",o:["5 m","7 m","1 m"],a:0,e:"√(16 + 9) = 5 m."},
+{q:"ab = 6 m, différence de cotes = 8 m. Vraie grandeur ?",o:["10 m","14 m","2 m"],a:0,e:"√(36 + 64) = 10 m."},
+{q:"La vraie grandeur est toujours…",o:["supérieure ou égale à la projection","inférieure à la projection","égale à la cote"],a:0,e:"Une projection orthogonale ne peut que raccourcir ou conserver la longueur."}]},
+{t:"Changement de plan de projection",niv:"L1",body:`
+<p>On remplace un plan de projection par un nouveau plan perpendiculaire à l'autre. On trace une nouvelle ligne de terre LT₁.</p>
+<p>Si on remplace V par V₁ (perpendiculaire à H) : la nouvelle projection a₁′ est sur la perpendiculaire à LT₁ passant par a, à une distance de LT₁ égale à la <b>cote</b> de A (la cote ne change pas, car H reste le même).</p>
+<p><b>But :</b> choisir LT₁ parallèle à la projection ab d'une droite. La droite devient alors parallèle à V₁ et sa projection a₁′b₁′ est en <b>vraie grandeur</b>.</p>`,
+q:[{q:"Quand on change le plan vertical, la cote d'un point…",o:["ne change pas","devient nulle","double"],a:0,e:"La cote est la distance à H, qui reste inchangé."},
+{q:"Pour obtenir la vraie grandeur de ab, on choisit LT₁…",o:["parallèle à ab","perpendiculaire à ab","à 45° de ab"],a:0,e:"La droite devient alors parallèle au nouveau plan."},
+{q:"Le nouveau plan de projection doit être…",o:["perpendiculaire à l'autre plan","parallèle à l'autre plan","oblique"],a:0,e:"Le système de projection reste orthogonal."}]},
+{t:"Sections planes de solides",niv:"L1",body:`
+<ul><li><b>Prisme droit</b>, plan parallèle aux bases : polygone identique à la base.</li>
+<li><b>Cylindre</b> : plan perpendiculaire à l'axe → cercle ; plan parallèle à l'axe → rectangle ; plan oblique → ellipse.</li>
+<li><b>Cône</b> : plan perpendiculaire à l'axe → cercle ; plan passant par l'axe → triangle ; plan oblique qui coupe toutes les génératrices → ellipse ; plan parallèle à une génératrice → parabole ; plan parallèle à l'axe → hyperbole.</li></ul>`,
+q:[{q:"Section d'un cylindre par un plan perpendiculaire à l'axe ?",o:["un cercle","un rectangle","une ellipse allongée seulement"],a:0,e:"Le plan est parallèle aux bases : on obtient un cercle."},
+{q:"Section d'un cône par un plan passant par l'axe ?",o:["un triangle","un cercle","une parabole"],a:0,e:"On obtient un triangle isocèle."},
+{q:"Section d'un cône par un plan parallèle à une génératrice ?",o:["une parabole","une ellipse","un cercle"],a:0,e:"C'est le cas limite entre ellipse et hyperbole."}]},
+{t:"Développement des solides",niv:"L1",body:`
+<p>Développer un solide, c'est mettre sa surface à plat sans la déformer.</p>
+<ul><li><b>Prisme droit</b> : rectangles côte à côte, plus les deux bases.</li>
+<li><b>Cylindre</b> (rayon r, hauteur h) : un rectangle de hauteur h et de largeur 2πr, plus deux disques.</li>
+<li><b>Cône</b> : un secteur circulaire de rayon g (génératrice), dont l'arc mesure 2πr. Angle du secteur = 360° × r / g.</li>
+<li><b>Pyramide</b> : des triangles autour de la base.</li>
+<li>La <b>sphère</b> n'est pas développable.</li></ul>
+<p><b>Exemple :</b> cône de rayon 3 m et de génératrice 5 m : angle = 360 × 3 / 5 = 216°.</p>`,
+q:[{q:"Le développement d'un cylindre est…",o:["un rectangle et deux disques","un secteur circulaire","un triangle"],a:0,e:"La surface latérale se déroule en rectangle."},
+{q:"Cône : r = 3 m, g = 5 m. Angle du secteur développé ?",o:["216°","108°","180°"],a:0,e:"360 × 3 / 5 = 216°."},
+{q:"Quel solide ne peut pas être développé ?",o:["La sphère","Le cône","Le prisme"],a:0,e:"La surface d'une sphère ne peut pas être mise à plat sans déformation."}]}
+);
+
+/* ===== Matière Géométrie ===== */
+DATA.push(
+{id:"geometrie",nom:"Géométrie",ico:"📏",desc:"Angles, triangles, cercle, transformations, repère, espace",lessons:[
+{t:"Angles et droites",niv:"Prépa",body:`
+<ul><li><b>Aigu</b> : moins de 90° &nbsp;|&nbsp; <b>droit</b> : 90° &nbsp;|&nbsp; <b>obtus</b> : entre 90° et 180° &nbsp;|&nbsp; <b>plat</b> : 180°</li>
+<li>Deux angles sont <b>complémentaires</b> si leur somme vaut 90°, et <b>supplémentaires</b> si elle vaut 180°.</li>
+<li>Les angles <b>opposés par le sommet</b> sont égaux.</li>
+<li>Deux droites parallèles coupées par une sécante forment des angles <b>correspondants égaux</b> et des angles <b>alternes-internes égaux</b>.</li></ul>
+<p><b>Exemple :</b> le complémentaire d'un angle de 35° est 55°.</p>`,
+q:[{q:"Quel est le complémentaire de 35° ?",o:["55°","145°","65°"],a:0,e:"90 − 35 = 55°."},
+{q:"Quel est le supplémentaire de 110° ?",o:["70°","80°","250°"],a:0,e:"180 − 110 = 70°."},
+{q:"Deux droites parallèles coupées par une sécante : les angles alternes-internes sont…",o:["égaux","supplémentaires","complémentaires"],a:0,e:"Les alternes-internes sont égaux quand les droites sont parallèles."}]},
+{t:"Les triangles",niv:"Prépa",body:`
+<ul><li>La somme des angles d'un triangle vaut <b>180°</b>.</li>
+<li><b>Équilatéral</b> : trois côtés égaux et trois angles de 60°. <b>Isocèle</b> : deux côtés égaux, deux angles égaux à la base. <b>Rectangle</b> : un angle droit.</li>
+<li><b>Inégalité triangulaire</b> : chaque côté est plus petit que la somme des deux autres.</li>
+<li>Droites remarquables : <b>hauteur</b>, <b>médiane</b> (vers le milieu du côté opposé), <b>médiatrice</b>, <b>bissectrice</b>.</li>
+<li>Aire = base × hauteur / 2.</li></ul>`,
+q:[{q:"Un triangle a des angles de 50° et 60°. Le troisième vaut…",o:["70°","110°","80°"],a:0,e:"180 − 50 − 60 = 70°."},
+{q:"Un triangle isocèle a un angle au sommet de 40°. Chaque angle à la base vaut…",o:["70°","40°","140°"],a:0,e:"(180 − 40) / 2 = 70°."},
+{q:"Peut-on construire un triangle de côtés 2, 3 et 7 ?",o:["Non","Oui","Seulement s'il est rectangle"],a:0,e:"2 + 3 = 5 est plus petit que 7 : l'inégalité triangulaire n'est pas respectée."}]},
+{t:"Quadrilatères et polygones",niv:"Prépa",body:`
+<ul><li><b>Carré</b>, <b>rectangle</b>, <b>losange</b>, <b>parallélogramme</b>, <b>trapèze</b> (deux côtés parallèles).</li>
+<li>Aire du parallélogramme : base × hauteur. Aire du losange : D × d / 2. Aire du trapèze : (B + b) × h / 2.</li>
+<li>Somme des angles d'un polygone convexe à n côtés : <b>(n − 2) × 180°</b>.</li>
+<li>Polygone régulier : tous les côtés et tous les angles sont égaux. Angle intérieur = (n − 2) × 180° / n.</li></ul>
+<p><b>Exemple :</b> hexagone régulier : somme = 4 × 180 = 720°, chaque angle = 120°.</p>`,
+q:[{q:"Somme des angles d'un quadrilatère ?",o:["360°","180°","540°"],a:0,e:"(4 − 2) × 180 = 360°."},
+{q:"Trapèze : B = 8 m, b = 4 m, h = 3 m. Aire ?",o:["18 m²","12 m²","36 m²"],a:0,e:"(8 + 4) × 3 / 2 = 18 m²."},
+{q:"Angle intérieur d'un hexagone régulier ?",o:["120°","108°","135°"],a:0,e:"(6 − 2) × 180 / 6 = 120°."}]},
+{t:"Le cercle",niv:"Prépa",body:`
+<ul><li>Éléments : <b>rayon</b>, <b>diamètre</b>, <b>corde</b>, <b>arc</b>, <b>secteur</b>, <b>tangente</b>.</li>
+<li>La tangente est <b>perpendiculaire au rayon</b> au point de contact.</li>
+<li>Aire : π r². Longueur d'un arc d'angle α : (α / 360) × 2 π r.</li>
+<li>Un <b>angle inscrit</b> vaut la moitié de l'angle au centre qui intercepte le même arc.</li>
+<li>Un triangle inscrit dans un cercle dont un côté est un diamètre est <b>rectangle</b>.</li></ul>
+<p><b>Exemple :</b> arc de 90° sur un cercle de rayon 4 m : (90 / 360) × 2π × 4 = 2π ≈ 6,28 m (une arche en quart de cercle).</p>`,
+q:[{q:"La tangente à un cercle est… au rayon au point de contact.",o:["perpendiculaire","parallèle","à 45°"],a:0,e:"Rayon et tangente forment un angle droit."},
+{q:"Arc de 90°, rayon 4 m : longueur ?",o:["≈ 6,28 m","≈ 25,1 m","≈ 12,6 m"],a:0,e:"(90 / 360) × 2π × 4 = 2π ≈ 6,28 m."},
+{q:"Un triangle inscrit avec un côté égal au diamètre est…",o:["rectangle","équilatéral","isocèle obligatoirement"],a:0,e:"Il est rectangle en le sommet opposé au diamètre."}]},
+{t:"Triangle rectangle : Pythagore et trigonométrie",niv:"Prépa",body:`
+<ul><li><b>Pythagore</b> : a² + b² = c² (c est l'hypoténuse). La <b>réciproque</b> permet de vérifier qu'un triangle est rectangle.</li>
+<li><b>sin α</b> = opposé / hypoténuse &nbsp;|&nbsp; <b>cos α</b> = adjacent / hypoténuse &nbsp;|&nbsp; <b>tan α</b> = opposé / adjacent</li>
+<li>Valeurs utiles : sin 30° = 0,5 ; cos 60° = 0,5 ; sin 45° = cos 45° ≈ 0,707.</li></ul>
+<p><b>Sur chantier :</b> la règle du triangle 3-4-5 sert à tracer un angle droit au sol.</p>
+<p><b>Exemple :</b> hypoténuse de 10 m et angle de 30° : le côté opposé mesure 10 × sin 30° = 5 m.</p>`,
+q:[{q:"Un triangle de côtés 5, 12 et 13 est-il rectangle ?",o:["Oui","Non","Impossible à savoir"],a:0,e:"5² + 12² = 25 + 144 = 169 = 13²."},
+{q:"Hypoténuse 10 m, angle 30° : côté opposé ?",o:["5 m","8,66 m","20 m"],a:0,e:"10 × sin 30° = 5 m."},
+{q:"cos 60° vaut…",o:["0,5","0,866","1"],a:0,e:"cos 60° = 0,5."}]},
+{t:"Symétries, translations, rotations, homothétie",niv:"Prépa",body:`
+<ul><li><b>Symétrie axiale</b> : image dans un miroir. Elle conserve les distances et les angles.</li>
+<li><b>Symétrie centrale</b> : demi-tour autour d'un point.</li>
+<li><b>Translation</b> : glissement selon un vecteur.</li>
+<li><b>Rotation</b> : tour autour d'un centre selon un angle.</li>
+<li><b>Homothétie</b> de rapport k : les longueurs sont multipliées par |k|, les aires par k², les volumes par k³.</li></ul>
+<p><b>Application :</b> une maquette au 1/100 réduit les longueurs par 100, les aires par 10 000 et les volumes par 1 000 000.</p>`,
+q:[{q:"Une homothétie de rapport 3 multiplie les aires par…",o:["9","3","6"],a:0,e:"Les aires sont multipliées par k² = 9."},
+{q:"Maquette au 1/100 : les volumes sont divisés par…",o:["1 000 000","100","10 000"],a:0,e:"100³ = 1 000 000."},
+{q:"La symétrie axiale conserve…",o:["les distances et les angles","seulement les angles","rien"],a:0,e:"C'est une isométrie : elle conserve les longueurs et les angles."}]},
+{t:"Repère, vecteurs et droites",niv:"L1",body:`
+<ul><li><b>Distance</b> entre A(x<sub>A</sub>, y<sub>A</sub>) et B(x<sub>B</sub>, y<sub>B</sub>) : AB = √((x<sub>B</sub> − x<sub>A</sub>)² + (y<sub>B</sub> − y<sub>A</sub>)²)</li>
+<li><b>Milieu</b> de [AB] : ((x<sub>A</sub> + x<sub>B</sub>) / 2 ; (y<sub>A</sub> + y<sub>B</sub>) / 2)</li>
+<li><b>Vecteur</b> AB : (x<sub>B</sub> − x<sub>A</sub> ; y<sub>B</sub> − y<sub>A</sub>)</li>
+<li><b>Droite</b> : y = m x + p (m = pente). Deux droites sont parallèles si elles ont la même pente, et perpendiculaires si m × m′ = −1.</li></ul>
+<p><b>Exemple :</b> A(1 ; 2) et B(4 ; 6). AB = √(3² + 4²) = 5, milieu = (2,5 ; 4), vecteur AB = (3 ; 4).</p>`,
+q:[{q:"A(1 ; 2) et B(4 ; 6) : distance AB ?",o:["5","7","25"],a:0,e:"√(3² + 4²) = 5."},
+{q:"Milieu de A(0 ; 0) et B(6 ; 4) ?",o:["(3 ; 2)","(6 ; 4)","(2 ; 3)"],a:0,e:"(0 + 6) / 2 = 3 et (0 + 4) / 2 = 2."},
+{q:"Une droite de pente 2 : une droite perpendiculaire a pour pente…",o:["−0,5","0,5","−2"],a:0,e:"2 × (−0,5) = −1."}]},
+{t:"Géométrie dans l'espace",niv:"L1",body:`
+<ul><li>Deux plans sont <b>parallèles</b> ou <b>sécants</b> (leur intersection est une droite).</li>
+<li>Une droite est <b>perpendiculaire à un plan</b> si elle est perpendiculaire à deux droites sécantes de ce plan (un poteau vertical sur un sol horizontal).</li>
+<li><b>Sphère</b> : volume 4/3 π r³ et aire 4 π r².</li>
+<li><b>Cube</b> d'arête a : volume a³, diagonale a√3.</li>
+<li><b>Relation d'Euler</b> (polyèdre convexe) : sommets − arêtes + faces = 2.</li></ul>
+<p><b>Exemple :</b> cube : 8 − 12 + 6 = 2. Sphère de rayon 3 m : volume = 4/3 × π × 27 = 36π ≈ 113,1 m³.</p>`,
+q:[{q:"Cube d'arête 2 m : diagonale ?",o:["≈ 3,46 m","≈ 2,83 m","4 m"],a:0,e:"2√3 ≈ 3,46 m."},
+{q:"Volume d'une sphère de rayon 3 m ?",o:["≈ 113,1 m³","≈ 28,3 m³","≈ 84,8 m³"],a:0,e:"4/3 × π × 27 = 36π ≈ 113,1 m³."},
+{q:"Pour un cube : sommets − arêtes + faces = ?",o:["2","0","6"],a:0,e:"8 − 12 + 6 = 2."}]}
+]}
+);
+
+/* ===== Pythagore et Thalès en détail ===== */
+(function(){
+const SVG_PYTH=`<svg viewBox="0 0 300 200" width="100%" role="img" aria-label="Triangle rectangle avec côtés a, b et hypoténuse c">
+<polygon points="40,40 40,160 220,160" fill="none" stroke="currentColor" stroke-width="2"/>
+<polyline points="40,146 54,146 54,160" fill="none" stroke="currentColor" stroke-width="1.5"/>
+<text x="20" y="105">a</text><text x="128" y="182">b</text><text x="142" y="92">c</text>
+<text x="170" y="36">c² = a² + b²</text>
+<text x="170" y="56" style="font-size:11px">c = hypoténuse</text>
+</svg>`;
+const SVG_THALES=`<svg viewBox="0 0 300 200" width="100%" role="img" aria-label="Triangle ABC avec M sur AB et N sur AC, MN parallèle à BC">
+<polygon points="150,20 40,170 260,170" fill="none" stroke="currentColor" stroke-width="2"/>
+<line x1="84" y1="110" x2="216" y2="110" stroke="currentColor" stroke-width="2"/>
+<circle cx="84" cy="110" r="3.5" fill="currentColor"/><circle cx="216" cy="110" r="3.5" fill="currentColor"/>
+<text x="144" y="14">A</text><text x="24" y="184">B</text><text x="264" y="184">C</text>
+<text x="62" y="108">M</text><text x="224" y="108">N</text>
+<text x="190" y="44">AM/AB = AN/AC</text><text x="190" y="62">= MN/BC</text>
+<text x="108" y="148" style="font-size:12px">(MN) // (BC)</text>
+</svg>`;
+const g=DATA.find(s=>s.id==='geometrie');
+g.lessons.splice(2,0,
+{t:"Le théorème de Pythagore",niv:"Prépa",svg:SVG_PYTH,body:`
+<p>Dans un <b>triangle rectangle</b>, le carré de l'<b>hypoténuse</b> (le côté opposé à l'angle droit, le plus long) est égal à la somme des carrés des deux autres côtés :</p>
+<p style="text-align:center"><b>c² = a² + b²</b></p>
+<ul><li>Pour trouver l'hypoténuse : c = √(a² + b²)</li>
+<li>Pour trouver un côté de l'angle droit : a = √(c² − b²)</li></ul>
+<p><b>Exemple 1 :</b> a = 6 et b = 8, donc c = √(36 + 64) = √100 = 10.</p>
+<p><b>Exemple 2 :</b> c = 13 et b = 5, donc a = √(169 − 25) = √144 = 12.</p>
+<p><b>À connaître :</b> la diagonale d'un rectangle L × l vaut √(L² + l²), et celle d'un carré de côté a vaut a√2.</p>`,
+q:[{q:"Triangle rectangle de côtés 9 et 12 : hypoténuse ?",o:["15","21","108"],a:0,e:"√(81 + 144) = √225 = 15."},
+{q:"Hypoténuse 17 et un côté 8 : l'autre côté vaut…",o:["15","9","25"],a:0,e:"√(289 − 64) = √225 = 15."},
+{q:"Diagonale d'un carré de côté 5 m ?",o:["≈ 7,07 m","10 m","25 m"],a:0,e:"5√2 ≈ 7,07 m."}]},
+{t:"Réciproque de Pythagore et équerre du maçon",niv:"Prépa",body:`
+<p><b>Réciproque :</b> si, dans un triangle, le carré du plus grand côté est égal à la somme des carrés des deux autres, alors le triangle est <b>rectangle</b> (l'angle droit est en face du plus grand côté).</p>
+<p>Si l'égalité est fausse, le triangle n'est <b>pas</b> rectangle.</p>
+<p><b>Triplets pythagoriciens :</b> (3 ; 4 ; 5), (5 ; 12 ; 13), (8 ; 15 ; 17), (7 ; 24 ; 25), et leurs multiples comme (6 ; 8 ; 10).</p>
+<p><b>Sur chantier :</b> avec une corde graduée 3-4-5 (ou 6-8-10), on trace un angle droit au sol. Pour vérifier qu'une fondation rectangulaire est bien d'équerre, on mesure ses deux diagonales : elles doivent être égales et valoir √(L² + l²).</p>`,
+q:[{q:"Un triangle de côtés 4, 5 et 7 est-il rectangle ?",o:["Non","Oui","On ne peut pas savoir"],a:0,e:"4² + 5² = 41, mais 7² = 49 : l'égalité est fausse."},
+{q:"Un triangle de côtés 6, 8 et 10 est-il rectangle ?",o:["Oui","Non","Seulement si on mesure les angles"],a:0,e:"36 + 64 = 100 = 10²."},
+{q:"Fondation rectangulaire de 6 m sur 8 m : la diagonale doit mesurer…",o:["10 m","14 m","12 m"],a:0,e:"√(36 + 64) = 10 m."}]},
+{t:"Pythagore en architecture",niv:"Prépa",body:`
+<ul><li><b>Longueur d'un rampant de toit :</b> demi-portée 4 m et hauteur 1,5 m donnent √(16 + 2,25) = √18,25 ≈ 4,27 m.</li>
+<li><b>Rampe d'accès :</b> 12 m en horizontal et 1 m de dénivelé donnent √(144 + 1) ≈ 12,04 m de rampe.</li>
+<li><b>Dans l'espace :</b> la diagonale d'un parallélépipède de dimensions a, b, c vaut √(a² + b² + c²). Exemple : 3, 4 et 12 m donnent √169 = 13 m.</li></ul>
+<p>Pour trouver une longueur inclinée (toit, rampe, escalier), on forme un triangle rectangle avec la longueur horizontale et la hauteur.</p>`,
+q:[{q:"Demi-portée 3 m et hauteur 4 m : longueur du rampant ?",o:["5 m","7 m","12 m"],a:0,e:"√(9 + 16) = 5 m."},
+{q:"Diagonale d'une pièce de 5 m sur 4 m ?",o:["≈ 6,40 m","9 m","20 m"],a:0,e:"√(25 + 16) = √41 ≈ 6,40 m."},
+{q:"Diagonale d'un parallélépipède de 3 m, 4 m et 12 m ?",o:["13 m","19 m","12 m"],a:0,e:"√(9 + 16 + 144) = √169 = 13 m."}]},
+{t:"Le théorème de Thalès",niv:"Prépa",svg:SVG_THALES,body:`
+<p><b>Configuration :</b> un triangle ABC, un point M sur (AB), un point N sur (AC), avec (MN) <b>parallèle</b> à (BC). Alors :</p>
+<p style="text-align:center"><b>AM / AB = AN / AC = MN / BC</b></p>
+<p>Le résultat est le même en configuration « papillon » (M et N de l'autre côté du sommet A).</p>
+<p><b>Calcul (produit en croix) :</b> AM = 3, AB = 5 et AN = 4,5. Alors AM / AB = 0,6, donc AC = 4,5 / 0,6 = 7,5. Si BC = 10, alors MN = 0,6 × 10 = 6.</p>
+<p><b>Attention :</b> les rapports se font entre les longueurs prises depuis le sommet commun A (petit segment sur grand segment), et MN sur BC.</p>`,
+q:[{q:"(MN) // (BC), AM = 3, AB = 5, BC = 10 : MN = ?",o:["6","4","7,5"],a:0,e:"MN = 10 × 3 / 5 = 6."},
+{q:"(MN) // (BC), AM = 2, AB = 6, AN = 3 : AC = ?",o:["9","4","5"],a:0,e:"AC = AN × AB / AM = 3 × 6 / 2 = 9."},
+{q:"On peut appliquer Thalès à condition que…",o:["(MN) et (BC) soient parallèles","le triangle soit rectangle","le triangle soit isocèle"],a:0,e:"Le parallélisme est la condition du théorème."}]},
+{t:"Réciproque de Thalès",niv:"Prépa",body:`
+<p>Si les points A, M, B sont alignés, A, N, C sont alignés <b>dans le même ordre</b>, et si <b>AM / AB = AN / AC</b>, alors les droites (MN) et (BC) sont <b>parallèles</b>.</p>
+<p>Si les deux rapports sont différents, les droites ne sont <b>pas</b> parallèles.</p>
+<p><b>Exemple 1 :</b> AM = 2, AB = 5, AN = 3, AC = 7,5. On a 2 / 5 = 0,4 et 3 / 7,5 = 0,4. Les rapports sont égaux : (MN) // (BC).</p>
+<p><b>Exemple 2 :</b> AM = 2, AB = 5, AN = 3, AC = 8. On a 0,4 et 0,375. Les rapports sont différents : (MN) n'est pas parallèle à (BC).</p>`,
+q:[{q:"AM = 2, AB = 5, AN = 3, AC = 7,5 : (MN) // (BC) ?",o:["Oui","Non","On ne peut pas savoir"],a:0,e:"2 / 5 = 0,4 = 3 / 7,5."},
+{q:"AM = 4, AB = 6, AN = 5, AC = 9 : (MN) // (BC) ?",o:["Non","Oui","On ne peut pas savoir"],a:0,e:"4 / 6 ≈ 0,667 et 5 / 9 ≈ 0,556 : rapports différents."},
+{q:"Pour utiliser la réciproque, on doit…",o:["comparer deux rapports de longueurs","mesurer un angle droit","calculer une aire"],a:0,e:"On compare AM / AB et AN / AC."}]},
+{t:"Thalès en pratique",niv:"Prépa",body:`
+<ul><li><b>Hauteur d'un arbre ou d'un bâtiment par son ombre :</b> un bâton de 1,5 m a une ombre de 2 m. L'arbre a une ombre de 12 m. Les rayons du soleil sont parallèles, donc hauteur = 1,5 / 2 × 12 = 9 m.</li>
+<li><b>Diviser un segment en parties égales :</b> on trace une demi-droite auxiliaire graduée, puis des parallèles (voir « Tracés géométriques de base » en dessin descriptif).</li>
+<li><b>Plans à l'échelle :</b> un plan au 1/50 est une réduction de rapport 1/50, donc des triangles semblables.</li>
+<li><b>Distance inaccessible :</b> on construit un petit triangle semblable que l'on peut mesurer. Exemple : petit triangle de côtés 3 m et 4 m, grand triangle dont le côté qui correspond au 3 m vaut 12 m. Le rapport est 4, donc l'autre côté vaut 16 m.</li></ul>`,
+q:[{q:"Bâton de 1,5 m (ombre 2 m), arbre avec ombre de 12 m : hauteur de l'arbre ?",o:["9 m","16 m","8 m"],a:0,e:"1,5 / 2 × 12 = 9 m."},
+{q:"Pourquoi Thalès marche avec les ombres ?",o:["Les rayons du soleil sont parallèles","Le soleil est vertical","Les ombres sont toujours égales"],a:0,e:"Des rayons parallèles donnent des triangles semblables."},
+{q:"Triangles semblables de rapport 4 : un côté de 3 m correspond à…",o:["12 m","7 m","0,75 m"],a:0,e:"3 × 4 = 12 m."}]}
+);
+})();
+
+let store={};try{store=JSON.parse(localStorage.getItem('archiprepa')||'{}')}catch(e){}
+function save(){try{localStorage.setItem('archiprepa',JSON.stringify(store))}catch(e){}}
+const app=document.getElementById('app'),title=document.getElementById('t');
+let filt='Tous';
+
+function lkey(i,j){return DATA[i].id+'|'+DATA[i].lessons[j].t}
+function best(i,j){return store[lkey(i,j)]}
+let view='home',sampleFn=null,imgOK=false,IDX=null,turns=[],ctl=null;
+const RULES="Tu es un assistant pédagogique pour des étudiants en architecture (année préparatoire et première année de licence) en République démocratique du Congo. Matières : chimie, dessin descriptif (géométrie descriptive, méthode de Monge), mathématiques, géométrie, physique, matériaux de construction, histoire de l'architecture. Réponds en français simple, étape par étape. Donne les formules utiles et un exemple chiffré quand c'est pertinent. Si on te donne un énoncé de TP, d'exercice ou une photo, explique d'abord la méthode, puis donne la solution détaillée. Si tu n'es pas sûr d'un point ou si la question sort de ces matières, dis-le clairement. N'utilise pas de markdown : pas d'astérisques, pas de dièses. Écris du texte simple avec des tirets et des numéros. Pas de longue introduction. Créateur de l'application ArchiPrépa : Modeste MK, étudiant en architecture à l'U.KA, qui l'a créée pour aider les nouveaux étudiants en architecture à s'adapter facilement à leurs cours. Si on te demande qui a créé l'application, réponds avec ces informations et n'invente aucun autre détail sur lui.";
+
+(async()=>{
+  try{
+    if(window.claude&&window.claude.use){
+      sampleFn=await window.claude.use('sample');
+      if(sampleFn){
+        const l=await sampleFn.limits().catch(()=>null);
+        imgOK=!!(l&&l.images);
+        const q=document.getElementById('q');
+        if(view==='home'&&(!q||!q.value))home();
+      }
+    }
+  }catch(e){sampleFn=null}
+})();
+
+function norm(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function buildIdx(){
+  IDX=[];
+  DATA.forEach((s,i)=>s.lessons.forEach((l,j)=>{
+    const txt=((l.body||'').replace(/<[^>]+>/g,' ')+' '+l.q.map(q=>q.q+' '+q.e).join(' ')).replace(/\s+/g,' ').trim();
+    IDX.push({i,j,t:norm(l.t),b:norm(txt),raw:txt,title:l.t,subj:s.nom,niv:l.niv});
+  }));
+}
+const STOP=new Set('a au aux avec c calcul calcule calculer ce ces cet cette comment cours d dans de des donne donner du elle elles en est et exercice explique expliquer expliquez faire fait falloir faut i il ils j je l la le lecon les m ma me mes mon n ne nous on ou par pas plus pour pourquoi qu que quel quelle quelles quels question qui quoi s sa sans se ses son sont sous sur t ta te tes ton tres trouve trouver tu un une vous y'.split(' '));
+function doSearch(q){
+  if(!IDX)buildIdx();
+  const toks=norm(q).split(/[^a-z0-9]+/).filter(w=>w.length>1&&!STOP.has(w));
+  if(!toks.length)return[];
+  return IDX.map(e=>{
+    let sc=0;
+    toks.forEach(w=>{if(e.t.includes(w))sc+=3;if(e.b.includes(w))sc+=1});
+    return {e,sc,toks};
+  }).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc).slice(0,8);
+}
+function snippet(e,toks){
+  const nb=e.b;let p=-1;
+  for(const w of toks){const k=nb.indexOf(w);if(k>=0){p=k;break}}
+  if(p<0)return e.raw.slice(0,110)+'…';
+  const a=Math.max(0,p-40);
+  return (a>0?'…':'')+e.raw.slice(a,a+120)+'…';
+}
+
+function home(){
+  view='home';title.textContent='ArchiPrépa';
+  let done=0,tot=0;DATA.forEach((s,i)=>s.lessons.forEach((l,j)=>{tot++;if(best(i,j)!=null)done++}));
+  app.innerHTML=`<h2 class="hello">Bonjour${profile&&profile.name?' '+esc(profile.name):''}</h2><input id="q" class="srch" type="search" placeholder="Cherche un mot ou une formule…" autocomplete="off" aria-label="Recherche">
+  <button class="pri ask" id="ask">Poser une question à l\'assistant</button>
+  <div id="res" hidden></div>
+  <div id="mainv">${installCard()}${resumeCard()}<div class="card"><b>Ta progression</b><div class="mut">${done} / ${tot} leçons terminées</div><div class="bar"><i style="width:${tot?done/tot*100:0}%"></i></div></div>
+  <div class="tabs">${['Tous','Prépa','L1'].map(f=>`<button class="${f===filt?'on':''}" data-f="${f}">${f==='Prépa'?'Année prépa':f}</button>`).join('')}</div>
+  ${DATA.map((s,i)=>{const n=s.lessons.filter(l=>filt==='Tous'||l.niv===filt).length;return `<button class="card btn" data-s="${i}"><div class="row"><span class="ico">${s.ico}</span><div><b>${s.nom}</b><div class="mut">${s.desc}</div><span class="pill">${n} leçon${n>1?'s':''}</span></div></div></button>`}).join('')}<button class="linkb" id="abtb" type="button">À propos · Créée par Modeste MK</button></div>`;
+  app.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{filt=b.dataset.f;home()});
+  app.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>subject(+b.dataset.s));
+  const ask=document.getElementById('ask');if(ask)ask.onclick=()=>assistant('');const ab2=document.getElementById('abtb');if(ab2)ab2.onclick=about;
+  const rs=document.getElementById('resume');if(rs)rs.onclick=()=>lesson(store.last[0],store.last[1]);
+  const ib=document.getElementById('inst');if(ib)ib.onclick=async()=>{try{deferredInstall.prompt();await deferredInstall.userChoice}catch(e){}deferredInstall=null;home()};
+  const q=document.getElementById('q'),res=document.getElementById('res'),mainv=document.getElementById('mainv');
+  q.oninput=()=>{
+    const v=q.value.trim();
+    if(!v){res.hidden=true;mainv.hidden=false;return}
+    const r=doSearch(v);
+    mainv.hidden=true;res.hidden=false;
+    const ab=/createur|auteur|modeste|cree|developpeur|propos/.test(norm(v));res.innerHTML=(ab?ABOUT_CARD:'')+(r.length?r.map((x,k)=>`<button class="card btn" data-r="${k}"><b>${esc(x.e.title)}</b><div class="mut"><span class="pill">${esc(x.e.subj)}</span> <span class="pill">${esc(x.e.niv)}</span></div><div class="exp">${esc(snippet(x.e,x.toks))}</div></button>`).join(''):(ab?'':'<div class="card mut">Aucune leçon ne correspond à cette recherche.</div>'))
+      +`<button class="pri" id="askq">Demander à l'assistant</button>`;
+    res.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const x=r[+b.dataset.r].e;lesson(x.i,x.j)});
+    const aq=document.getElementById('askq');if(aq)aq.onclick=()=>assistant(v);const ba=document.getElementById('abt');if(ba)ba.onclick=about;
+  };
+}
+
+function copyFor(code){
+  return ({not_granted:"Tu as refusé l'accès à l'assistant. Recharge la page pour réessayer.",
+    rate_limited:"Trop de demandes pour le moment. Attends un peu puis réessaie.",
+    session_expired:"Ta session a expiré. Reconnecte-toi à ton compte Claude.",
+    sampling_disabled:"L'assistant n'est pas disponible avec ce compte.",
+    image_rejected:"Cette photo n'est pas acceptée. Essaie une autre image (JPEG ou PNG)."})[code]
+    ||"Problème de connexion : l’assistant IA a besoin d’Internet. Vérifie ta connexion puis réessaie.";
+}
+
+function assistant(prefill){
+  view='assistant';title.textContent='Assistant';
+  app.innerHTML=`<button class="back">← Retour</button>
+  <div id="chat" aria-live="polite"></div>
+  <div class="card"><textarea id="msg" rows="4" placeholder="Écris ta question ou recopie l'énoncé de ton TP…"></textarea>
+  ${imgOK?'<input id="pic" type="file" accept="image/*" hidden><div class="rowb"><button class="sec" id="picb" type="button">Ajouter une photo du TP</button><span class="mut" id="picn"></span></div>':''}
+  <button class="pri" id="send">Envoyer</button><button class="sec wide" id="stop" hidden>Arrêter</button></div>`;
+  const chat=document.getElementById('chat'),msg=document.getElementById('msg'),send=document.getElementById('send'),stop=document.getElementById('stop');
+  msg.value=prefill||'';
+  function bubble(kind,text){const d=document.createElement('div');d.className='msg '+kind;d.textContent=text;chat.appendChild(d);d.scrollIntoView({block:'nearest'});return d}
+  if(!turns.length){bubble('bot',sampleFn?"Bonjour ! Pose ta question sur le cours ou recopie ton TP. Je t'explique la méthode puis la solution.":"Bonjour ! Pose ta question avec des mots-clés, par exemple « Pythagore » ou « aire ».")}
+  else turns.forEach(t=>bubble(t.role==='user'?'me':'bot',t.content));
+  app.querySelector('.back').onclick=home;
+  {const notice=document.createElement('p');notice.className='mut';notice.id='ainote';
+    const off=navigator.onLine===false;
+    if(!sampleFn)notice.textContent=off?'Pas de connexion Internet. L’assistant IA complet a besoin d’Internet et n’est pas inclus dans l’application installée. Assistant simplifié actif : il rappelle les formules principales et retrouve les leçons.':'L’assistant IA complet n’est pas inclus dans l’application installée : il a besoin d’Internet et d’un service IA. Assistant simplifié actif : il rappelle les formules principales et retrouve les leçons.';
+    else if(off)notice.textContent='Pas de connexion Internet. L’assistant IA a besoin d’Internet : reconnecte-toi pour poser une question détaillée. En attendant, l’assistant simplifié répond hors ligne.';
+    if(notice.textContent)chat.appendChild(notice)}
+  const pic=document.getElementById('pic'),picb=document.getElementById('picb'),picn=document.getElementById('picn');
+  if(picb){picb.onclick=()=>pic.click();pic.onchange=()=>{picn.textContent=pic.files[0]?pic.files[0].name:''}}
+  stop.onclick=()=>{if(ctl)ctl.abort()};
+  send.onclick=async()=>{
+    const text=msg.value.trim();
+    const file=pic&&pic.files&&pic.files[0]?pic.files[0]:null;
+    if(!text&&!file)return;
+    const content=text||"Voici la photo de mon exercice. Explique-moi la méthode puis donne la solution.";
+    turns.push({role:'user',content});
+    bubble('me',content+(file?'\n[photo jointe]':''));
+    const bot=bubble('bot','Réflexion en cours…');
+    msg.value='';send.disabled=true;stop.hidden=false;
+    ctl=new AbortController();
+    const opts={cache:false,signal:ctl.signal,onText:({text})=>{bot.textContent=text;bot.scrollIntoView({block:'nearest'})}};
+    if(file)opts.images=file;
+    try{
+      if(typeof sampleFn!=='function'||navigator.onLine===false){
+        const ans=(typeof sampleFn==='function'?'Pas de connexion Internet : l’assistant IA est indisponible. Aide simplifiée :\n\n':'')+localTutor(content);turns.push({role:'assistant',content:ans});bot.textContent=ans;
+      }else{
+        const r=await sampleFn([{role:'user',content:RULES},...turns.slice(-12)],opts);
+        turns.push({role:'assistant',content:r.text});
+        bot.textContent=r.text+(r.truncated?'\n\n(Réponse coupée. Demande la suite si besoin.)':'');
+      }
+    }catch(e){
+      if(e&&e.text){bot.textContent=e.text+'\n\n(Réponse interrompue.)';turns.push({role:'assistant',content:e.text})}
+      else if(e&&['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(e.code)){
+        const ans=localTutor(content);turns.push({role:'assistant',content:ans});bot.textContent=ans;
+      }
+      else{
+        turns.pop();
+        bot.textContent=(e&&e.code==='cancelled')?'Arrêté.':copyFor(e&&e.code);
+        if(!msg.value)msg.value=text;
+      }
+    }finally{
+      send.disabled=false;stop.hidden=true;ctl=null;
+      if(pic){pic.value='';picn.textContent=''}
+    }
+  };
+  if(prefill)msg.focus();
+}
+
+function localTutor(question){
+  const q=norm(question);
+  const tips=[];
+  const R=[
+    [/\b(pythagore|triangle rectangle|hypotenuse)\b/,'Pythagore : dans un triangle rectangle, hypoténuse² = côté₁² + côté₂². Exemple : côtés 3 et 4 donnent une hypoténuse √(9 + 16) = 5. Réciproque : si c² = a² + b², le triangle est rectangle.'],
+    [/\bthales\b/,'Thalès : si (MN) est parallèle à (BC), alors AM / AB = AN / AC = MN / BC. Écris les rapports dans le même ordre, puis fais le produit en croix.'],
+    [/\b(surface|aire|aires)\b/,'Aires : rectangle = L × l ; triangle = base × hauteur ÷ 2 ; cercle = π × r² ; trapèze = (B + b) × h ÷ 2. Les unités sont au carré (m², cm²).'],
+    [/\bvolumes?\b/,'Volumes : pavé = L × l × h ; prisme = aire de base × hauteur ; cylindre = π × r² × h ; pyramide ou cône = ⅓ × aire de base × h ; sphère = 4/3 × π × r³. Les unités sont cubiques (m³, cm³).'],
+    [/\b(cercle|circonference|perimetre)\b/,'Cercle : périmètre = 2 × π × r ; aire = π × r². Rectangle : périmètre = 2 × (L + l).'],
+    [/\b(mole|moles|masse molaire)\b/,'Quantité de matière : n = m / M (n en mol, m en g, M en g/mol). Donc m = n × M.'],
+    [/\b(concentration|dilution)\b/,'Concentration : C = n / V (mol/L). Dilution : C₁ × V₁ = C₂ × V₂.'],
+    [/\b(ph|acide|acides)\b/,'pH : inférieur à 7, la solution est acide ; égal à 7, neutre ; supérieur à 7, basique. Une unité de pH correspond à un facteur 10 sur la concentration en ions H₃O⁺.'],
+    [/\b(force|forces|newton|poids)\b/,'Le poids se calcule par P = m × g (m en kg, g ≈ 9,8 N/kg). Une force se mesure en newtons (N). À l’équilibre, la somme des forces est nulle.'],
+    [/\bpression\b/,'Pression : P = F / S, en pascals (1 Pa = 1 N/m²).'],
+    [/\b(moment|levier)\b/,'Moment d’une force : M = F × d (en N·m), où d est le bras de levier. À l’équilibre, la somme des moments est nulle.'],
+    [/\bpente\b/,'Pente (%) = hauteur ÷ longueur horizontale × 100. Angle du toit ou de la rampe : tan α = hauteur ÷ longueur horizontale.'],
+    [/\bechelle\b/,'Échelle 1/100 : 1 cm sur le plan = 100 cm = 1 m dans la réalité. Plan = réel ÷ dénominateur ; réel = plan × dénominateur.'],
+    [/\b(monge|epure|projection)\b/,'Épure de Monge : un point a deux projections, a sur le plan horizontal et a′ sur le plan vertical, alignées sur une ligne de rappel perpendiculaire à la ligne de terre (LT). La cote se mesure de a′ à LT, l’éloignement de a à LT.'],
+    [/\b(createur|auteur|modeste|qui a (cree|developpe))\b/,'ArchiPrépa a été créée par Modeste MK, étudiant en architecture à l’U.KA, pour aider les nouveaux étudiants à s’adapter facilement à leurs cours.'],
+    [/\b(bonjour|salut|bonsoir)\b/,'Bonjour ! Je peux rappeler des formules et retrouver les leçons d’ArchiPrépa.']
+  ];
+  R.forEach(([re,txt])=>{if(re.test(q))tips.push(txt)});
+  const found=doSearch(question);
+  if(found.length){tips.push('Leçons qui peuvent t’aider :');found.slice(0,3).forEach(x=>tips.push('- '+x.e.subj+' : '+x.e.title))}
+  if(!tips.length)return 'Hors ligne, je ne peux pas répondre en détail à cette question. Essaie des mots-clés comme « Pythagore », « Thalès », « aire », « volume », « mole », « force » ou utilise la recherche de l’accueil pour retrouver une leçon.';
+  return tips.join('\n\n');
+}
+
+function subject(i){
+  const s=DATA[i];title.textContent=s.nom;
+  app.innerHTML=`<button class="back">← Retour</button>`+s.lessons.map((l,j)=>({l,j})).filter(x=>filt==='Tous'||x.l.niv===filt).map(({l,j})=>{const b=best(i,j);return `<button class="card btn" data-l="${j}"><b>${l.t}</b><div class="mut"><span class="pill">${l.niv}</span> ${b!=null?'· meilleur score : '+b+'/'+l.q.length:'· pas encore fait'}</div></button>`}).join('');
+  app.querySelector('.back').onclick=home;
+  app.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>lesson(i,+b.dataset.l));
+}
+function lesson(i,j){
+  const l=DATA[i].lessons[j];title.textContent=DATA[i].nom;
+  store.last=[i,j];save();
+  app.innerHTML=`<button class="back">← Retour</button><div class="card"><h2>${l.t}</h2>${l.svg||''}${l.body}</div><button class="pri">Faire le quiz (${l.q.length} questions)</button>`;
+  app.querySelector('.back').onclick=()=>subject(i);
+  app.querySelector('.pri').onclick=()=>quiz(i,j,0,0);
+  scrollTo(0,0);
+}
+function quiz(i,j,k,score){
+  const l=DATA[i].lessons[j];
+  if(k>=l.q.length){
+    const prev=best(i,j);if(prev==null||score>prev){store[lkey(i,j)]=score;save()}
+    app.innerHTML=`<div class="card"><h2>Résultat</h2><div class="big">${score} / ${l.q.length}</div><p style="text-align:center">${score===l.q.length?'Parfait !':score>=l.q.length/2?'Bien, continue !':'Relis la leçon et réessaie.'}</p></div>
+    <button class="pri" id="r">Relire la leçon</button><button class="pri" id="a">Refaire le quiz</button><button class="pri" id="h">Accueil</button>`;
+    document.getElementById('r').onclick=()=>lesson(i,j);
+    document.getElementById('a').onclick=()=>quiz(i,j,0,0);
+    document.getElementById('h').onclick=home;return;
+  }
+  const q=l.q[k];
+  app.innerHTML=`<div class="mut">Question ${k+1} / ${l.q.length}</div><div class="card"><b>${q.q}</b>${q.o.map((o,n)=>`<button class="opt" data-n="${n}">${o}</button>`).join('')}<div class="exp" id="e"></div></div><button class="pri" id="nx" style="display:none">${k+1<l.q.length?'Suivant':'Voir le résultat'}</button>`;
+  let done=false;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    if(done)return;done=true;const n=+b.dataset.n;
+    app.querySelectorAll('.opt')[q.a].classList.add('ok');
+    if(n!==q.a)b.classList.add('ko');
+    document.getElementById('e').textContent=q.e;
+    document.getElementById('nx').style.display='block';
+    document.getElementById('nx').onclick=()=>quiz(i,j,k+1,score+(n===q.a?1:0));
+  });
+}
+/* ===== Profil et réglages ===== */
+const ACC={bleu:{n:'Bleu',c:'#1b4f9c'},vert:{n:'Vert',c:'#1d6b4a'},violet:{n:'Violet',c:'#5b3fa6'},orange:{n:'Orange',c:'#b4501a'},rose:{n:'Rose',c:'#a8326b'}};
+let profile=null;
+try{profile=JSON.parse(localStorage.getItem('archiprepa_profile')||'null')}catch(e){profile=null}
+function saveProfile(){try{localStorage.setItem('archiprepa_profile',JSON.stringify(profile))}catch(e){}}
+function setAccentAttr(a){
+  const r=document.documentElement;
+  if(a&&a!=='bleu')r.setAttribute('data-accent',a);else r.removeAttribute('data-accent');
+}
+function applyAccent(){setAccentAttr(profile&&profile.accent)}
+function swatches(el,cur,onPick){
+  el.innerHTML=Object.keys(ACC).map(k=>`<button type="button" class="swb${k===cur?' on':''}" data-k="${k}" style="background:${ACC[k].c}" aria-label="${ACC[k].n}" aria-pressed="${k===cur}"></button>`).join('');
+  el.querySelectorAll('.swb').forEach(b=>b.onclick=()=>{onPick(b.dataset.k);swatches(el,b.dataset.k,onPick)});
+}
+function levelTabs(el,cur,onPick){
+  el.innerHTML=[['Prépa','Année prépa'],['L1','L1'],['Tous','Tous']].map(([k,l])=>`<button type="button" data-n="${k}" class="${k===cur?'on':''}">${l}</button>`).join('');
+  el.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{onPick(b.dataset.n);levelTabs(el,b.dataset.n,onPick)});
+}
+function onboarding(){
+  view='onboarding';title.textContent='ArchiPrépa';
+  document.getElementById('gear').hidden=true;
+  let niv='Prépa',acc='bleu';
+  setAccentAttr('bleu');
+  app.innerHTML=`<div class="card"><h2>Crée ton profil</h2>
+  <p class="mut">Ton profil reste sur ton téléphone. Il sert à adapter l'app à ton niveau et à garder ta progression.</p>
+  <label for="pn">Prénom</label>
+  <input id="pn" class="srch" type="text" maxlength="30" autocomplete="given-name" placeholder="Ton prénom">
+  <div class="lbl">Niveau</div><div class="tabs" id="nv"></div>
+  <div class="lbl">Couleur de l'interface</div><div class="sw" id="sw"></div>
+  <div class="err" id="er" role="alert"></div>
+  <button class="pri" id="go" type="button">Commencer</button></div>`;
+  levelTabs(document.getElementById('nv'),niv,v=>{niv=v});
+  swatches(document.getElementById('sw'),acc,v=>{acc=v;setAccentAttr(v)});
+  const go=()=>{
+    const name=document.getElementById('pn').value.trim();
+    if(!name){document.getElementById('er').textContent='Écris ton prénom pour continuer.';document.getElementById('pn').focus();return}
+    profile={name,niv,accent:acc};saveProfile();
+    filt=niv;document.getElementById('gear').hidden=false;home();
+  };
+  document.getElementById('go').onclick=go;
+  document.getElementById('pn').onkeydown=e=>{if(e.key==='Enter')go()};
+}
+function twoStep(btn,labelAfter,action){
+  const first=btn.textContent;let armed=false,t=null;
+  btn.onclick=()=>{
+    if(!armed){armed=true;btn.textContent=labelAfter;t=setTimeout(()=>{armed=false;btn.textContent=first},4000);return}
+    clearTimeout(t);action();
+  };
+}
+function settings(){
+  view='settings';title.textContent='Réglages';
+  let niv=profile.niv||'Prépa',acc=profile.accent||'bleu';
+  app.innerHTML=`<button class="back">← Retour</button>
+  <div class="card"><h2>Mon profil</h2>
+  <label for="pn">Prénom</label>
+  <input id="pn" class="srch" type="text" maxlength="30" value="${esc(profile.name||'')}">
+  <div class="lbl">Niveau</div><div class="tabs" id="nv"></div>
+  <div class="lbl">Couleur de l'interface</div><div class="sw" id="sw"></div>
+  <div class="err" id="er" role="alert"></div><div class="ok" id="okm" role="status"></div>
+  <button class="pri" id="sv" type="button">Enregistrer</button></div>
+  <div class="card"><b>Progression</b><p class="mut">Efface tes scores de quiz sur cet appareil.</p><button class="sec" id="rp" type="button">Effacer ma progression</button></div>
+  <div class="card"><b>Changer de profil</b><p class="mut">Supprime ton profil et revient à l'écran de création.</p><button class="sec" id="rm" type="button">Supprimer mon profil</button></div>`;
+  levelTabs(document.getElementById('nv'),niv,v=>{niv=v});
+  swatches(document.getElementById('sw'),acc,v=>{acc=v;setAccentAttr(v)});
+  app.querySelector('.back').onclick=()=>{applyAccent();home()};
+  document.getElementById('sv').onclick=()=>{
+    const name=document.getElementById('pn').value.trim();
+    if(!name){document.getElementById('er').textContent='Le prénom ne peut pas être vide.';return}
+    profile={name,niv,accent:acc};saveProfile();filt=niv;
+    document.getElementById('er').textContent='';
+    document.getElementById('okm').textContent='Réglages enregistrés.';
+  };
+  twoStep(document.getElementById('rp'),'Appuie encore pour confirmer',()=>{store={};save();home()});
+  twoStep(document.getElementById('rm'),'Appuie encore pour confirmer',()=>{
+    profile=null;try{localStorage.removeItem('archiprepa_profile')}catch(e){}
+    store={};save();turns=[];onboarding();
+  });
+}
+
+const ABOUT_CARD='<button class="card btn" id="abt" type="button"><b>À propos : Modeste MK</b><div class="exp">Créateur d\'ArchiPrépa, étudiant en architecture à l\'U.KA.</div></button>';
+const LOGO="data:image/webp;base64,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";
+const AVATAR="data:image/jpeg;base64,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";
+function about(){
+  view='about';title.textContent='À propos';
+  app.innerHTML=`<button class="back">← Retour</button>
+  <div class="card"><img class="logo-big" src="${LOGO}" alt="Logo d'ArchiPrépa"><h2 class="ctr">ArchiPrépa</h2>
+  <div class="lbl">Créateur</div>
+  <div class="creator"><img class="avatar sm" src="${AVATAR}" alt="Photo de Modeste MK"><div><b>Modeste MK</b><div class="mut">Étudiant en architecture à l'U.KA</div></div></div>
+  <p>Il a créé cette application pour aider les nouveaux étudiants en architecture à s'adapter facilement à leurs cours.</p>
+  <div class="lbl">Contenu</div>
+  <p class="mut">Chimie, dessin descriptif, mathématiques, géométrie, physique, matériaux de construction et histoire de l'architecture, pour l'année préparatoire et la L1.</p></div>`;
+  app.querySelector('.back').onclick=home;
+}
+
+let deferredInstall=null;
+const IS_FRAME=(()=>{try{return window.top!==window}catch(e){return true}})();
+const IS_STANDALONE=(()=>{try{return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}})();
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;if(view==='home'){const q=document.getElementById('q');if(!q||!q.value)home()}});
+window.addEventListener('appinstalled',()=>{deferredInstall=null;if(view==='home')home()});
+function installCard(){
+  if(IS_FRAME||IS_STANDALONE||!deferredInstall)return '';
+  return '<button class="card btn" id="inst" type="button"><b>Installer ArchiPrépa</b><div class="exp">Ajoute l\'app sur ton écran d\'accueil. Elle marche sans internet.</div></button>';
+}
+function resumeCard(){
+  const l=store.last;
+  if(!Array.isArray(l)||!DATA[l[0]]||!DATA[l[0]].lessons[l[1]])return '';
+  return '<button class="card btn" id="resume" type="button"><b>Reprendre</b><div class="mut">'+esc(DATA[l[0]].nom)+' · '+esc(DATA[l[0]].lessons[l[1]].t)+'</div></button>';
+}
+function netUI(){const b=document.getElementById('offb');if(b)b.hidden=navigator.onLine!==false}
+window.addEventListener('online',netUI);
+window.addEventListener('offline',netUI);
+async function start(){
+  applyAccent();
+  netUI();
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+  const hl=document.getElementById('hlogo');if(hl)hl.src=LOGO;
+  const g=document.getElementById('gear');
+  g.onclick=()=>{if(profile)settings()};
+  if(profile){g.hidden=false;filt=profile.niv||'Tous';home();return}
+  let owner=false;
+  if(window.claude&&window.claude.use){
+    app.innerHTML='<p class="mut">Chargement…</p>';
+    try{
+      const u=await Promise.race([window.claude.use('user'),new Promise(r=>setTimeout(()=>r(null),2500))]);
+      const v=u&&u.isOwner?u.isOwner():false;
+      owner=(await Promise.resolve(v))===true;
+    }catch(e){owner=false}
+  }
+  if(owner){
+    profile={name:'Modeste',niv:'Tous',accent:'bleu',owner:true};saveProfile();
+    g.hidden=false;filt='Tous';home();
+  }else onboarding();
+}
+
+start();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>

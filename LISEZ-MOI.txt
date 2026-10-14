@@ -1,0 +1,87 @@
+ARCHIPRÉPA : INSTALLATION SUR ANDROID (Infinix Spark 8)
+=========================================================
+
+CONTENU DE L'ARCHIVE
+  index.html            l'application (toutes les leçons, formules, quiz)
+  manifest.json         identité de l'app (nom, icônes, couleurs)
+  sw.js                 service worker : fait marcher l'app sans internet
+  icon-192.png          icône de l'écran d'accueil
+  icon-512.png          grande icône
+  icon-maskable-512.png icône adaptée aux formes rondes d'Android
+
+IMPORTANT
+  Une application web ne s'installe et ne marche hors connexion que si elle est
+  mise en ligne en HTTPS. Si tu ouvres index.html directement depuis l'application
+  Fichiers du téléphone, tu peux lire l'app, mais PAS l'installer et PAS la
+  garder hors connexion. Il faut donc l'héberger une fois (gratuit).
+
+
+ÉTAPE 1 : METTRE L'APP EN LIGNE (une seule fois, gratuit)
+
+  Option A : Netlify Drop (le plus simple, depuis un ordinateur)
+    1. Dézippe l'archive.
+    2. Va sur app.netlify.com/drop et glisse le dossier dézippé dans la page.
+    3. Netlify te donne une adresse en https:// (tu peux la renommer).
+
+  Option B : GitHub Pages (possible depuis le téléphone)
+    1. Crée un compte gratuit sur github.com.
+    2. Crée un dépôt public nommé archiprepa.
+    3. « Add file » puis « Upload files » : envoie les 6 fichiers (pas le zip).
+    4. Settings, puis Pages, puis « Deploy from a branch », branche main, dossier /root.
+    5. Après 1 à 2 minutes, l'adresse est https://TON-NOM.github.io/archiprepa/
+
+
+ÉTAPE 2 : INSTALLER SUR LE TÉLÉPHONE
+
+  1. Ouvre l'adresse dans Chrome.
+  2. Attends une dizaine de secondes (l'app se télécharge pour le hors-ligne).
+  3. Installe de l'une de ces deux façons :
+       - appuie sur la carte « Installer ArchiPrépa » en haut de l'accueil
+       - ou menu ⋮ de Chrome, puis « Installer l'application »
+         (ou « Ajouter à l'écran d'accueil »)
+  4. L'icône ArchiPrépa apparaît sur l'écran d'accueil. L'app s'ouvre en plein écran.
+
+
+ÉTAPE 3 : VÉRIFIER QUE ÇA MARCHE SANS INTERNET
+
+  1. Ouvre l'app une première fois avec internet et laisse-la charger.
+  2. Active le mode avion.
+  3. Ferme l'app complètement puis rouvre-la depuis l'icône.
+  4. Elle doit s'ouvrir, afficher « Hors ligne » en haut, et toutes les leçons,
+     formules et quiz doivent marcher.
+
+
+PROGRÈS
+  Les scores de quiz, la dernière leçon ouverte et le profil sont enregistrés
+  sur le téléphone, dans l'app. Ils restent même sans internet.
+  Attention : effacer les données de Chrome ou désinstaller l'app efface aussi
+  la progression. Il n'y a pas de synchronisation entre deux téléphones.
+
+
+ASSISTANT
+  - Dans l'application installée, l'assistant IA complet n'est pas disponible
+    (il demande internet et un service IA payant). L'app l'indique clairement.
+  - À sa place, un assistant simplifié fonctionne sans internet : il rappelle les
+    formules principales (Pythagore, Thalès, aires, volumes, mole, pH...) et
+    retrouve les leçons correspondantes.
+  - La recherche de l'accueil marche aussi hors connexion.
+
+
+MISES À JOUR
+  1. Remplace les fichiers sur l'hébergement (Netlify ou GitHub).
+  2. Sur le téléphone, ouvre l'app avec internet DEUX fois : la première
+     ouverture télécharge la nouvelle version, la deuxième l'affiche.
+  3. Si tu changes seulement les icônes ou le manifeste, change aussi le nom
+     'archiprepa-v4' en 'archiprepa-v5' (etc.) dans la première ligne de sw.js.
+  La progression est conservée lors des mises à jour : elle est liée au titre
+  de chaque leçon, donc ajouter des leçons ne la décale pas. Si tu renommes une
+  leçon, son score disparaît.
+
+
+PLAY STORE (plus tard)
+  Avec l'adresse https:// de l'étape 1, un outil comme PWABuilder (pwabuilder.com)
+  transforme l'app en fichier Android à envoyer sur la Play Console.
+
+
+CRÉATEUR
+  ArchiPrépa a été créée par Modeste MK, étudiant en architecture à l'U.KA.
